@@ -1,0 +1,95 @@
+<div class="flex-column trade-container">
+    <div id="price-liquidity" class="flex-row">
+        <div class="flex-item flex-grow text-left">
+            <div class="green">Price</div>
+            <div id="trade-price" class="orange text-big"></div>
+        </div>
+        <div class="flex-item flex-grow text-right">
+            <div class="green">Liquidity</div>
+            <div id="trade-liquidity" class="orange text-big"></div>
+        </div>
+    </div>
+    <!-- TradingView Widget BEGIN -->
+    <div class="tradingview-widget-container">
+        <div id="tradingview-chart"></div>
+    </div>
+    <!-- TradingView Widget END -->
+    <table class="orderbook-options">
+        <tbody>
+            <tr>
+                <td><div id="orderbook-link" class="flex-item green">Orderbook</div></td>
+                <td><div id="orders-link" class="flex-item orange">Orders</div></td>
+                <td><div id="fills-link" class="flex-item orange">Fills</div></td>
+                <td><div id="trades-link" class="flex-item orange">Trades</div></td>
+            </tr>
+        </tbody>
+    </table>
+
+
+    <hr>
+    <table class="orderbook">
+        <tbody>
+            <tr>
+                <td class="text-small faded">vol</td>
+                <td class="text-small light">bids</td>
+                <td class="text-small light">asks</td>
+                <td class="text-small faded">vol</td>
+            </tr>
+            <tr>
+                <td id="bid-amount-0" class="faded"></td>
+                <td id="bid-price-0" class="green"></td>
+                <td id="ask-price-0" class="red"></td>
+                <td id="ask-amount-0" class="faded"></td>
+            </tr>
+            <tr>
+                <td id="bid-amount-1" class="faded"></td>
+                <td id="bid-price-1" class="green"></td>
+                <td id="ask-price-1" class="red"></td>
+                <td id="ask-amount-1" class="faded"></td>
+            </tr>
+            <tr>
+                <td id="bid-amount-2" class="faded"></td>
+                <td id="bid-price-2" class="green"></td>
+                <td id="ask-price-2" class="red"></td>
+                <td id="ask-amount-2" class="faded"></td>
+            </tr>
+            <tr>
+                <td id="bid-amount-3" class="faded"></td>
+                <td id="bid-price-3" class="green"></td>
+                <td id="ask-price-3" class="red"></td>
+                <td id="ask-amount-3" class="faded"></td>
+            </tr>
+            <tr>
+                <td id="bid-amount-4" class="faded"></td>
+                <td id="bid-price-4" class="green"></td>
+                <td id="ask-price-4" class="red"></td>
+                <td id="ask-amount-4" class="faded"></td>
+            </tr>
+            <tr>
+                <td id="bid-amount-5" class="faded"></td>
+                <td id="bid-price-5" class="green"></td>
+                <td id="ask-price-5" class="red"></td>
+                <td id="ask-amount-5" class="faded"></td>
+            </tr>
+        </tbody>
+    </table>
+    <hr>
+    <div class="flex-row buy-sell-container">
+        <div>
+            <div id="base-balance"></div>
+            <div id="base-amount" class="text-right text-big orange amount-value">0</div>
+            <input type="range" id="base-range" class="amount-range" value="0" />
+            <div id="amount-base-label" class="text-right text-small grey">Amount</div>
+        </div>
+        <div>
+            <div id="token-balance"></div>
+            <div id="token-amount" class="text-right text-big orange amount-value">0</div>
+            <input type="range" id="token-range" class="amount-range" value="0" />
+            <div id="amount-token-label" class="text-right text-small grey">Amount</div>
+        </div>
+    </div>
+    <div class="flex-row buy-sell-container">
+        <button id="buy-button" class="grey-bkg button-large">BUY</button>
+        <button id="sell-button" class="grey-bkg button-large">SELL</button>
+    </div>
+</div>

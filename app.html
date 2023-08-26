@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="./manifest.json">
+    <meta name="theme-color" content="#111b1dff"/>
+    <meta name="apple-mobile-web-app-title" content="offline-plugin"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black"/>
+    <link rel="apple-touch-icon" sizes="180x180" href="./images/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./images/favicon-16x16.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css?v=0.0.1">
+    <title>ODEX</title>
+    <!-- Remove for production -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+</head>
+<body>
+    <div id="header-container" class="flex-row">
+        <div class="flex-item top-item">
+            <img class="logo" src="./images/logo_small_white.png" />
+        </div>
+        <div id="top-right" class="flex-item top-item">
+            <!-- Top Right Dynamic Content -->
+        </div>
+    </div>
+    <div id="content">
+        <!-- Main Dynamic Content -->
+    </div>
+    <div id="footer-container">
+        <hr class="footer-hr">
+        <div class="flex-row footer-menu">
+            <div class="flex-item footer-item load-markets">
+                <img class="footer-icon" src="./images/icon-markets.png" />
+                <div class="green">Markets</div>
+            </div>
+            <div class="flex-item footer-item load-wallets">
+                <img class="footer-icon" src="./images/icon-wallets.png" />
+                <div class="green">Wallets</div>
+            </div>
+            <div class="flex-item footer-item load-trade">
+                <img class="footer-icon" src="./images/icon-trade.png" />
+                <div class="green">Trade</div>
+            </div>
+        </div>
+    </div>
+    <script type="module" src="./app.js"></script>
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+</body>
+</html>

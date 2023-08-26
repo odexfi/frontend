@@ -1,0 +1,91 @@
+<div class="content-container">
+    <div id="price-liquidity" class="flex-row">
+        <div class="flex-item flex-grow text-left">
+            <div class="green">Price</div>
+            <div class="orange text-big">$18.230.40</div>
+        </div>
+        <div class="flex-item flex-grow text-right">
+            <div class="green">Liquidity</div>
+            <div class="orange text-big">$456,290</div>
+        </div>
+    </div>
+    <div class="flex-row flex-middle flex-center"><img class="order-wallet-icon" src="./images/icon-wallets-selected.png" /> Wallet 1</div>
+    <div class="spacer">&nbsp;</div>
+    <div class="light text-big">Confirm Order</div>
+    <hr>
+    <div class="flex-row confirm-container">
+        <div class="flex-item flex-grow text-left">
+            <div class="confirm-details">Trade: <span id="amount-in"></span></div>
+            <div class="confirm-details">For: <span id="amount-out"></span></div>
+            <div class="confirm-details">Max Price: <span id="price-confirm" class="text-big light"></span></div>
+            <div class="confirm-details">Expected Fill: <span id="fill-confirm" class="text-big"></span></div>
+            <div class="confirm-details">Gas Fee: $0.00</div>
+            <div class="confirm-details">Maker/Taker: 0%/0.1%</div>
+            <div class="confirm-details">After Fees: <span id="after-fees"></span></div>
+        </div>
+        <div class="flex-item">
+            <input type="range" id="price-range" min="0" value="6" max="11" step="1" />
+        </div>
+        <div class="flex-item">
+            <table class="confirmbook text-small">
+                <tbody>
+                    <tr>
+                        <td id="ask-price-5" class="red"></td>
+                        <td id="ask-amount-5" class="faded"></td>
+                    </tr>
+                    <tr>
+                        <td id="ask-price-4" class="red"></td>
+                        <td id="ask-amount-4" class="faded"></td>
+                    </tr>
+                    <tr>
+                        <td id="ask-price-3" class="red"></td>
+                        <td id="ask-amount-3" class="faded"></td>
+                    </tr>
+                    <tr>
+                        <td id="ask-price-2" class="red"></td>
+                        <td id="ask-amount-2" class="faded"></td>
+                    </tr>
+                    <tr>
+                        <td id="ask-price-1" class="red"></td>
+                        <td id="ask-amount-1" class="faded"></td>
+                    </tr>
+                    <tr>
+                        <td id="ask-price-0" class="red"></td>
+                        <td id="ask-amount-0" class="faded"></td>
+                    </tr>
+                    <tr>
+                        <td id="bid-price-0" class="green"></td>
+                        <td id="bid-amount-0" class="faded"></td>
+                    </tr>
+                    <tr>
+                        <td id="bid-price-1" class="green"></td>
+                        <td id="bid-amount-1" class="faded"></td>
+                    </tr>
+                    <tr>
+                        <td id="bid-price-2" class="green"></td>
+                        <td id="bid-amount-2" class="faded"></td>
+                    </tr>
+                    <tr>
+                        <td id="bid-price-3" class="green"></td>
+                        <td id="bid-amount-3" class="faded"></td>
+                    </tr>
+                    <tr>
+                        <td id="bid-price-4" class="green"></td>
+                        <td id="bid-amount-4" class="faded"></td>
+                    </tr>
+                    <tr>
+                        <td id="bid-price-5" class="green"></td>
+                        <td id="bid-amount-5" class="faded"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <hr>
+    <div class="spacer">&nbsp;</div>
+    <div id="confirm-buttons" class="flex-row buy-sell-container">
+        <button id="order-confirm" class="green-bkg button-large">CONFIRM</button>
+        <button id="order-cancel" class="red-bkg button-large">CANCEL</button>
+    </div>
+    <div class="spacer">&nbsp;</div>
+</div>

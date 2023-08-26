@@ -1,0 +1,28 @@
+{
+    "short_name": "ODEX",
+    "name": "ODEX Open Decentralized Exchange",
+    "icons": [
+      {
+        "src": "./images/icon.svg",
+        "type": "image/svg+xml",
+        "sizes": "1080x1080"
+      },
+      {
+        "src": "./images/android-chrome-192x192.png",
+        "type": "image/png",
+        "sizes": "192x192"
+      },
+      {
+        "src": "./images/android-chrome-512x512.png",
+        "type": "image/png",
+        "sizes": "512x512"
+      }
+    ],
+    "theme_color": "#111b1dff",
+    "background_color": "#111b1dff",
+    "display": "standalone",
+    "orientation": "portrait",
+    "scope": "./",
+    "start_url": "./app.html",
+    "splash_pages": null
+  }

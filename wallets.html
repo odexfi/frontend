@@ -1,0 +1,88 @@
+<div class="content-container">
+    <div class="flex-row wallet-options">
+        <div id="virtual-wallets-link" class="flex-item wallet-option green">Virtual Wallets</div>
+        <div id="connected-wallets-link" class="flex-item wallet-option orange">Connected Wallets</div>
+    </div>
+    <hr>
+    <div class="flex-row flex-middle connected-wallet-container">
+        <div class="flex-item">
+            <img src="./images/icon-wallets-selected.png" class="wallets-icon" />
+        </div>
+        <div class="flex-item flex-grow">
+            <div id="wallet-name" class="wallets-name text-big"></div>
+            <div id="link-rename" class="rename-wallet text-small orange">rename</div>
+        </div>
+        <div class="flex-item flex-grow text-right">
+            <div class="text-big green">Connected</div>
+            <div>
+                <span id="wallet-ether" class="blue"></span>
+                <span id="wallet-value"></span>
+            </div>
+        </div>
+    </div>
+    <div class="flex-row flex-middle flex-center copy-link" id="copy-wallet-address">
+        <span id="wallet-address" class="wallet-address text-small blue"></span>
+        <img src="./images/copy.png" class="copy-icon" />
+    </div>
+    <div class="flex-row flex-center">
+        <button id="button-backup" class="flex-item connected-wallet-button">BACKUP</button>
+        <button id="button-restore" class="flex-item connected-wallet-button">RESTORE</button>
+        <button id="button-remove" class="flex-item connected-wallet-button">REMOVE</button>
+    </div>
+    <div id="wallet-assets" class="flex-column"></div>
+    <div class="flex-row flex-middle flex-center">
+        <img src="./images/add.png" class="add-icon" />
+        <span id="import-tokens" class="green">Import Tokens</span>
+    </div>
+    <button id="button-deposit" class="green-bkg">DEPOSIT</button>
+    <hr>
+    <div id="disconnected-wallets"></div>
+    <div id="link-add-wallet" class="flex-row flex-middle flex-center">
+        <img src="./images/add.png" class="add-icon" />
+        <span id="import-tokens" class="green">Add Virtual Wallet</span>
+    </div>
+    <div class="spacer">&nbsp;</div>
+    <div class="spacer">&nbsp;</div>
+    <div class="spacer">&nbsp;</div>
+    <div id="deposit" class="flex-column flex-middle modal">
+        <div class="flex-item">
+            <div class="text-big">DEPOSIT FUNDS</div>
+            <div>Please note that ODEX is currently deployed to Goerli testnet. Only send testnet tokens and ETH which holds no real value. You will need some ETH to pay transaction fees in your wallet.</div>
+        </div>
+        <div class="spacer">&nbsp;</div>
+        <div class="flex-item">
+            <div class="flex-column flex-middle flex-center copy-link">
+                <div>Your Deposit Address:</div>
+                <div id="deposit-address" class="wallet-address text-small blue"></div>
+            </div>
+        </div>
+        <div class="flex-item">
+            <button id="button-deposit-copy" class="button-large green-bkg">COPY ADDRESS</button>
+            <button id="button-deposit-close" class="button-large">CLOSE</button>
+        </div>
+        <div class="spacer">&nbsp;</div>
+        <div id="deposit-qr" class="flex-item"></div>
+    </div>
+    <div id="withdraw" class="flex-column flex-middle modal">
+        <div class="flex-item">
+            <div class="text-big">WITHDRAW FUNDS</div>
+            <div>Please note that ODEX is currently deployed to Goerli testnet. You will need some ETH to pay transaction fees in your wallet.</div>
+        </div>
+        <div class="spacer">&nbsp;</div>
+        <div class="flex-item">
+            <div class="flex-column flex-middle flex-center copy-link">
+                <div class="green">Withdraw <span id="withdraw-asset"></span></div>
+                <div>Your Withdrawal Address:</div>
+                <div><input type="text" id="withdrawal-address" placeholder="0x..." /></div>
+                <div>Amount To Withdraw:</div>
+                <div class="text-small faded">Balance: <span id="withdraw-balance"></span></div>
+                <div><input type="text" id="withdrawal-amount" placeholder="0" /></div>
+            </div>
+        </div>
+        <div class="spacer">&nbsp;</div>
+        <div class="flex-item">
+            <button id="button-withdraw-confirm" class="button-large green-bkg">CONFIRM</button>
+            <button id="button-withdraw-close" class="button-large">CLOSE</button>
+        </div>
+    </div>
+</div>
