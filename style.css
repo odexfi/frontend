@@ -5,18 +5,18 @@
 .dark { color: #111b1dff }
 .green { color: #10d990ff }
 .red { color: #d34134ff }
-.blue { color: #12dbcdff }
 .faded { color: #08645dff }
 .orange { color: #f09e68ff }
+.blue { color: #12dbcdff }
 
 .grey-bkg { background: #808890ff }
 .light-bkg { background: #cdd0d4ff }
 .dark-bkg { background: #111b1dff }
 .green-bkg { background: #10d990ff }
 .red-bkg { background: #d34134ff }
-.blue-bkg { background: #12dbcdff }
 .faded-bkg { background: #08645dff }
 .orange-bkg { background: #f09e68ff }
+.blue-bkg { background: #12dbcdff }
 
 /* CSS Doc & Helpers */
 
@@ -26,7 +26,7 @@ html {
     padding: 0;
 }
 body {
-    background-color: #111b1dff;
+    background-color: #101212ff;
     color: #808890ff;
     font-family: 'Poppins', sans-serif;
     height: 100%;
@@ -64,6 +64,14 @@ button {
     border: 0px;
     border-radius: 3px;
     font-size: 11px; 
+}
+
+.button-close {
+    width: 30px;
+    height: 22px;
+    border: 0px;
+    border-radius: 3px;
+    font-size: 11px;  
 }
 
 input[type=text] {
@@ -283,6 +291,15 @@ hr {
     height: 60px;
 }
 
+.market-form {
+    width: 92%;
+    margin: 2px auto;
+}
+
+.market-table {
+    font-size: 10px;
+}
+
 /* Wallets */
 
 .market-title {
@@ -370,12 +387,29 @@ hr {
     cursor: pointer;
 }
 
+#orderbook-container {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    min-height: 160px;
+    overflow: auto;
+}
+
 .orderbook {
     font-size: 12px;
+    width: 100%;
 }
 
 .orderbook td {
     width: 25%;
+}
+
+#display-trades {
+    padding: 4%;
+}
+
+#display-activity {
+    padding: 4%;
 }
 
 .buy-sell-container {
@@ -476,6 +510,7 @@ input[type="range"]::-webkit-slider-thumb {
 
 .index-footer {
     width: 92%;
+    max-width: 300px;
 }
 
 .partner-logo {

@@ -17,73 +17,30 @@
     <table class="orderbook-options">
         <tbody>
             <tr>
-                <td><div id="orderbook-link" class="flex-item green">Orderbook</div></td>
-                <td><div id="orders-link" class="flex-item orange">Orders</div></td>
-                <td><div id="fills-link" class="flex-item orange">Fills</div></td>
-                <td><div id="trades-link" class="flex-item orange">Trades</div></td>
+                <td><div id="orderbook-link" class="ob-link flex-item orange">Orderbook</div></td>
+                <td><div id="orders-link" class="ob-link flex-item orange">Orders</div></td>
+                <td><div id="trades-link" class="ob-link flex-item orange">Trades</div></td>
+                <td><div id="activity-link" class="ob-link flex-item orange">Activity</div></td>
             </tr>
         </tbody>
     </table>
 
 
     <hr>
-    <table class="orderbook">
-        <tbody>
-            <tr>
-                <td class="text-small faded">vol</td>
-                <td class="text-small light">bids</td>
-                <td class="text-small light">asks</td>
-                <td class="text-small faded">vol</td>
-            </tr>
-            <tr>
-                <td id="bid-amount-0" class="faded"></td>
-                <td id="bid-price-0" class="green"></td>
-                <td id="ask-price-0" class="red"></td>
-                <td id="ask-amount-0" class="faded"></td>
-            </tr>
-            <tr>
-                <td id="bid-amount-1" class="faded"></td>
-                <td id="bid-price-1" class="green"></td>
-                <td id="ask-price-1" class="red"></td>
-                <td id="ask-amount-1" class="faded"></td>
-            </tr>
-            <tr>
-                <td id="bid-amount-2" class="faded"></td>
-                <td id="bid-price-2" class="green"></td>
-                <td id="ask-price-2" class="red"></td>
-                <td id="ask-amount-2" class="faded"></td>
-            </tr>
-            <tr>
-                <td id="bid-amount-3" class="faded"></td>
-                <td id="bid-price-3" class="green"></td>
-                <td id="ask-price-3" class="red"></td>
-                <td id="ask-amount-3" class="faded"></td>
-            </tr>
-            <tr>
-                <td id="bid-amount-4" class="faded"></td>
-                <td id="bid-price-4" class="green"></td>
-                <td id="ask-price-4" class="red"></td>
-                <td id="ask-amount-4" class="faded"></td>
-            </tr>
-            <tr>
-                <td id="bid-amount-5" class="faded"></td>
-                <td id="bid-price-5" class="green"></td>
-                <td id="ask-price-5" class="red"></td>
-                <td id="ask-amount-5" class="faded"></td>
-            </tr>
-        </tbody>
-    </table>
+    <div id="orderbook-container">
+        
+    </div>
     <hr>
     <div class="flex-row buy-sell-container">
         <div>
             <div id="base-balance"></div>
-            <div id="base-amount" class="text-right text-big orange amount-value">0</div>
+            <div id="base-amount" contenteditable="true" class="text-right text-big orange amount-value">0</div>
             <input type="range" id="base-range" class="amount-range" value="0" />
             <div id="amount-base-label" class="text-right text-small grey">Amount</div>
         </div>
         <div>
             <div id="token-balance"></div>
-            <div id="token-amount" class="text-right text-big orange amount-value">0</div>
+            <div id="token-amount" contenteditable="true" class="text-right text-big orange amount-value">0</div>
             <input type="range" id="token-range" class="amount-range" value="0" />
             <div id="amount-token-label" class="text-right text-small grey">Amount</div>
         </div>

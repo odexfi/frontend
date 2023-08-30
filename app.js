@@ -1,17 +1,18 @@
 import { ethers } from "https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.min.js";
 
-const provider = new ethers.JsonRpcProvider('https://rpc.ankr.com/eth_goerli');
+let provider = new ethers.JsonRpcProvider('https://arbitrum-goerli.public.blastapi.io');
+
 const contracts = {
-    odex: '0x4ADf8fcE21302611aBBE3C43E6A2c5B46f8345A4',
-    odexFactory: '0x06735E0951D84C4C4d4258aBF5B5aa281Bb96812',
-    wbtc: '0xCd14Cd33C7Cb5ECBC9C0390f561B0110983F3A49',
-    weth: '0x2ca583bF70155ec792D07D5F4D1AaFc522AD5e70',
-    usd: '0x85B5eea334737318b902bDeF434E63ec5efBc113',
-    odexToken: '0x553C033863B755E97FF96Ec1b633a89f8F26dBfA',
-    wbtcMarket: '0xa9b050Bf7a714B5f43B3178c1E5e4d4eAE1584FF',
-    wethMarket: '0x0F9a8be03cDD33E4E943d205c0B0Db1a3f1cF380',
-    odexMarket: '0xE5Bca9b164cC27D9F845F641782aeFc77d62d4FC'
-}
+    odex: '0x69f1f049E6503FAE8A46ECfeFb6735172Cd3bDB2',
+    odexFactory: '0x592e7683619b4876c46E4522f8A564359E4406c5',
+    wbtc: '0xF345B243451c00CB787e9b4EDb6D35449B36fe98',
+    weth: '0xeEfded38ff34aE65Ed66a4dDff4dD1317Ed3b624',
+    usd: '0x4Aa63a394ee2AEae844bb0f158c6b75655d9c169',
+    odexToken: '0xC330ca506E3368EFb539b5ad08149633E63B7FFe',
+    wbtcMarket: '0x9b618aCa54C04F0f94486dDd0158fD2C235D868A',
+    wethMarket: '0x385EDC2DAA11EA93C70A09EE5957e3d26074F28c',
+    odexMarket: '0xC7e1bbdd1E057Af672A2126c7bE0dC480b93c2cb'
+  }
 
 const copyToClipboard = async (containerid) => {
     let range;
@@ -29,7 +30,11 @@ const copyToClipboard = async (containerid) => {
     }
 }
 
-const socials = `<div class="flex-rown flex-end"><a href="https://twitter.com/odexfi" target="_blank"><img src="./images/twitter.png" class="social-icon" /></a><a href="https://github.com" target="_blank"><img src="./images/github.png" class="social-icon" /></a><a href="https://odex.substack.com" target="_blank"><img src="./images/newsletter.png" class="social-icon" /></a></div>`;
+const refreshRate = 15 * 1000;
+
+const formatUSD = (n) => Number(n).toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
+
+const socials = `<div class="flex-rown flex-end"><a href="https://twitter.com/odexfi" target="_blank"><img src="./images/twitter.png" class="social-icon" /></a><a href="https://github.com/odexfi" target="_blank"><img src="./images/github.png" class="social-icon" /></a><a href="https://odex.substack.com" target="_blank"><img src="./images/newsletter.png" class="social-icon" /></a><a href="https://odexfi.gitbook.io/docs/" target="_blank"><img src="./images/docs.png" class="social-icon" /></a></div>`;
 
 const loadMarkets = async () => {
     document.querySelector('.load-markets .footer-icon').setAttribute("src", './images/icon-markets-selected.png');
@@ -43,8 +48,6 @@ const loadMarkets = async () => {
     const topWallet = `<div id="markets-wallet"><img class="markets-wallet-icon" src="./images/icon-wallets-selected.png" /> ${wallets[connectedWallet].name}</div>`;
     document.getElementById('top-right').innerHTML = topWallet;
     document.getElementById('markets-wallet').onclick = loadWallets;
-    document.getElementById('link-latest-markets').onclick = () => alert('Coming Soon');
-    document.getElementById('link-add-market').onclick = () => alert('Coming Soon');
     await fetch('./components/market.html').then(response => response.text()).then(async (responseText) => {
         let mHTML = '';
         const markets = JSON.parse(localStorage.markets);
@@ -55,28 +58,125 @@ const loadMarkets = async () => {
             const marketPair = `${market.token}/${market.baseAsset}`;
             const price = await priceLookup(market.token);
             const divPrice = BigInt(price) / 1000000n;
-            const formattedPrice =  `$${divPrice.toString()}`;
-            const button = `<button class="trade-button" data-market="${index}">TRADE</button>`;
+            const formattedPrice =  formatUSD(divPrice);
+            const buttons = `<button class="button-close red-bkg remove-market" data-market="${index}">X</button> <button class="button-small trade-button" data-market="${index}">TRADE</button>`;
             mHTML += responseText
             .replace('<!-- market-image -->', marketImage)
             .replace('<!-- market-pair -->', marketPair)
             .replace('<!-- market-price -->', formattedPrice)
-            .replace('<!-- market-button -->', button);
+            .replace('<!-- market-buttons -->', buttons);
             index += 1;
         }
-        document.getElementById('markets-container').innerHTML = mHTML;
+        document.getElementById('markets-container').innerHTML = mHTML; 
     });
     document.querySelectorAll('.trade-button').forEach(a => a.addEventListener('click', e => {
         const marketIndex = e.target.getAttribute("data-market");
         localStorage.setItem('lastMarket', marketIndex);
         loadTrade();
     }));
+    document.querySelectorAll('.remove-market').forEach(a => a.addEventListener('click', e => {
+        const marketIndex = e.target.getAttribute("data-market");
+        const markets = JSON.parse(localStorage.markets);
+        markets.splice(marketIndex, 1);
+        localStorage.setItem('markets', JSON.stringify(markets));
+        loadMarkets();
+    }));
+    document.getElementById('link-top-markets').onclick = loadMarkets;
+    document.getElementById('link-latest-markets').onclick = () => listMarkets();
+    document.getElementById('find-market').onclick = findMarket;
+    document.getElementById('create-market').onclick = createMarket;
+}
+
+const findMarket = () => {
+    const tokenFilter = prompt('Enter a token contract address to search for');
+    listMarkets(tokenFilter);
+}
+
+const listMarkets = async (tokenFilter=false) => {
+    const contract = new ethers.Contract(contracts.odex, odexAbi, provider);
+    const odexCount = await contract.odexCount();
+    const assets = JSON.parse(localStorage.assets);
+    let oHTML = `<table class="market-table"><tbody><tr class="orange"><td>Token</td><td>Base Asset</td><td>Volume</td><td>Actions</td></tr>`;
+    for (let i = odexCount - 1n; i >= 0n; i--) {
+        const oi = await contract.odexs(i);
+        if (tokenFilter && oi[2] !== tokenFilter) continue;
+        const baseAsset = new ethers.Contract(oi[3], erc20Abi, provider);
+        const baseAssetSymbol = await baseAsset.symbol();
+        const baseAssetDecimals = await baseAsset.decimals();
+        let volume = Number(ethers.formatUnits(oi[11].toString(),baseAssetDecimals)).toFixed();
+        if (baseAssetSymbol.includes('USD')) volume = formatUSD(volume);
+        const token = new ethers.Contract(oi[2], erc20Abi, provider);
+        const tokenSymbol = await token.symbol();
+        const baseAssetLink = `<span class="green">${baseAssetSymbol}</span> <a href="https://goerli.etherscan.io/token/${oi[3]}" target="_blank">${oi[3].substr(0,8)}</a>`;
+        const tokenLink = `<span class="green">${tokenSymbol}</span> <a href="https://goerli.etherscan.io/token/${oi[2]}" target="_blank">${oi[2].substr(0,8)}</a>`;
+        oHTML += `<tr><td>${tokenLink}</td><td>${baseAssetLink}</td><td>${volume}</td><td><button class="button-small add-market" data-odex-index="${i}">ADD</button></td></tr>`;
+        document.getElementById('markets-container').innerHTML = `<h2>Latest Markets</h2>${oHTML}</tbody></table>`;
+        document.querySelectorAll('.add-market').forEach(a => a.addEventListener('click', e => {
+            const marketId = e.target.getAttribute("data-odex-index");
+            addMarket(marketId);
+        }));
+    }
+}
+
+const addMarket = async (marketId) => {
+    const markets = JSON.parse(localStorage.markets);
+    const contract = new ethers.Contract(contracts.odex, odexAbi, provider);
+    const oi = await contract.odexs(marketId);
+    const token = new ethers.Contract(oi[2], erc20Abi, provider);
+    const baseAsset = new ethers.Contract(oi[3], erc20Abi, provider);
+    const tokenSymbol = await token.symbol();
+    const baseAssetSymbol = await baseAsset.symbol();
+    const tokenDecimals = await token.decimals();
+    const baseAssetDecimals = await baseAsset.decimals();
+    const newMarket = {
+        token: tokenSymbol,
+        baseAsset: baseAssetSymbol,
+        tokenAddress: oi[2],
+        baseAssetAddress: oi[3],
+        marketId,
+        address: oi[0],
+        image: 'market-misc.png',
+        tokenDecimals: Number(tokenDecimals),
+        baseAssetDecimals: Number(baseAssetDecimals),
+    }
+    markets.push(newMarket);
+    localStorage.setItem('markets', JSON.stringify(markets));
+}
+
+const createMarket = async () => {
+    await fetch('./components/markets-new.html').then(response => response.text()).then(async (responseText) => {
+        document.getElementById('markets-container').innerHTML = responseText;
+        document.getElementById('deploy-market').onclick = deployMarket;
+    });
+}
+
+const deployMarket = async () => {
+    document.getElementById('deploy-market-container').innerHTML = '<div class="faded">DEPLOYING...</div>';
+    const virtualWallet = await loadWallet();
+    const newToken = document.getElementById('new-token').value;
+    const newBaseAsset = document.getElementById('new-base-asset').value;
+    const newMinOrder = document.getElementById('new-min-order').value;
+    const newTickRounding = document.getElementById('new-tick-rounding').value;
+    try {
+        const baseAsset = new ethers.Contract(newBaseAsset, erc20Abi, virtualWallet);
+        const decimals = await baseAsset.decimals();
+        const contract = new ethers.Contract(contracts.odexFactory, odexFactoryAbi, virtualWallet);
+        const tx = await contract.deploy(newToken, newBaseAsset, ethers.parseUnits(newMinOrder,decimals), ethers.parseUnits(newTickRounding,decimals));
+        tx.wait();
+        alert('New market deployed, should be displayed on your markets page within 60 seconds');
+        const contract2 = new ethers.Contract(contracts.odex, odexAbi, provider);
+        const odexCount = await contract2.odexCount();
+        addMarket(Number(odexCount-1n))
+        listMarkets();
+    } catch (e) {
+        console.log('app.js e732 indexStats failed',e);
+    }
 }
 
 /* Wallets */
 
 const backupWallet = async () => {
-    const virtualWallet = loadWallet();
+    const virtualWallet = await loadWallet();
     prompt("Your Private Key", virtualWallet.privateKey);
 }
 
@@ -128,9 +228,9 @@ const initAccount = async () => {
     const wallet2 = ethers.Wallet.createRandom();
     const wallet3 = ethers.Wallet.createRandom();
     const wallets = [
-        { name: 'Wallet 1', privateKey: wallet1.privateKey, address: wallet1.address },
-        { name: 'Wallet 2', privateKey: wallet2.privateKey, address: wallet2.address },
-        { name: 'Wallet 3', privateKey: wallet3.privateKey, address: wallet3.address },
+        { name: 'Wallet 1', privateKey: wallet1.privateKey, address: wallet1.address, type: 'virtual' },
+        { name: 'Wallet 2', privateKey: wallet2.privateKey, address: wallet2.address, type: 'virtual' },
+        { name: 'Wallet 3', privateKey: wallet3.privateKey, address: wallet3.address, type: 'virtual' },
     ];
     localStorage.setItem('wallets', JSON.stringify(wallets));
     localStorage.setItem('connectedWallet', 0);
@@ -142,22 +242,50 @@ const initAccount = async () => {
     ];
     localStorage.setItem('assets', JSON.stringify(assets));
     const markets = [
-        { token: 'wBTC', baseAsset: 'USDC', tokenAddress: contracts.wbtc, baseAssetAddress: contracts.usd, poolId: 0, address: contracts.wbtcMarket, image: 'market-wbtcusdc.png', tokenDecimals: 18, baseAssetDecimals: 6 },
-        { token: 'wETH', baseAsset: 'USDC', tokenAddress: contracts.weth, baseAssetAddress: contracts.usd, poolId: 1, address: contracts.wethMarket, image: 'market-wethusdc.png', tokenDecimals: 18, baseAssetDecimals: 6 },
-        { token: 'ODEX', baseAsset: 'USDC', tokenAddress: contracts.odexToken, baseAssetAddress: contracts.usd, poolId: 2, address: contracts.odexMarket, image: 'market-odexusdc.png', tokenDecimals: 18, baseAssetDecimals: 6 },
+        { token: 'wBTC', baseAsset: 'USDC', tokenAddress: contracts.wbtc, baseAssetAddress: contracts.usd, marketId: 0, address: contracts.wbtcMarket, image: 'market-wbtcusdc.png', tokenDecimals: 18, baseAssetDecimals: 6 },
+        { token: 'wETH', baseAsset: 'USDC', tokenAddress: contracts.weth, baseAssetAddress: contracts.usd, marketId: 1, address: contracts.wethMarket, image: 'market-wethusdc.png', tokenDecimals: 18, baseAssetDecimals: 6 },
+        { token: 'ODEX', baseAsset: 'USDC', tokenAddress: contracts.odexToken, baseAssetAddress: contracts.usd, marketId: 2, address: contracts.odexMarket, image: 'market-odexusdc.png', tokenDecimals: 18, baseAssetDecimals: 6 },
     ];
     localStorage.setItem('markets', JSON.stringify(markets));
     localStorage.setItem('lastMarket', 1);
     localStorage.setItem('prices', '{}');
 }
 
-const loadWallet = () => {
+const loadWallet = async () => {
     const wallets = JSON.parse(localStorage.wallets);
     const connectedWallet = localStorage.connectedWallet || 0;
-    const loadWallet = new ethers.Wallet(wallets[connectedWallet].privateKey);
-    const virtualWallet = loadWallet.connect(provider);
-    virtualWallet.name = wallets[connectedWallet].name;
+    let virtualWallet;
+    if (wallets[connectedWallet].type == 'browser') {
+        provider = new ethers.BrowserProvider(window.ethereum)
+        virtualWallet = await provider.getSigner();
+    } else {
+        const loadWallet = new ethers.Wallet(wallets[connectedWallet].privateKey);
+        virtualWallet = loadWallet.connect(provider);
+    }
+    virtualWallet.name = wallets[connectedWallet].name || 'Unknown Wallet';
+    virtualWallet.type = wallets[connectedWallet].type || 'virtual';
     return virtualWallet;
+}
+
+const connectWallet = async () => {
+    provider = new ethers.BrowserProvider(window.ethereum)
+    const signer = await provider.getSigner();
+    const network = await provider.getNetwork();
+    if (network.chainId !== 421613n) alert('Please set your network to Arbitrum Goerli Testnet or visit chainlist.org');
+    const wallets = JSON.parse(localStorage.wallets);
+    window.ethereum.on('accountsChanged', () => { connectWallet() });
+    window.ethereum.on('network', () => { connectWallet() });
+    let walletExists = false;
+    for (let i = 0; i < wallets.length; i++)
+        if (wallets[i].address == signer.address) walletExists = i;
+    if (walletExists === false) {
+        wallets.push({ name: 'Connected Wallet', privateKey: 'UNKNOWN CHECK BROWSER WALLET', address: signer.address, type: 'browser' })
+        localStorage.setItem('wallets', JSON.stringify(wallets));
+        localStorage.setItem('connectedWallet',wallets.length-1);
+    } else {
+        localStorage.setItem('connectedWallet',walletExists);
+    }
+    loadWallets();
 }
 
 const erc20Abi = [
@@ -176,6 +304,11 @@ const odexAbi = [
     "function tvl() view returns (uint)",
     "function volume() view returns (uint)",
     "function odexCount() view returns (uint)",
+    "function odexs(uint) view returns (address marketAddress, address deployer, address token, address baseAsset, uint marketId, uint deployedTimestamp, uint minOrder, uint tickRounding, uint multiplier, uint buyVolume, uint sellVolume, uint baseAssetTotalVolume)",
+];
+
+const odexFactoryAbi = [
+    "function deploy(address _token, address _baseAsset, uint _minOrder, uint _tickRounding) public returns (address)"
 ];
 
 const odexMarketsAbi = [
@@ -184,10 +317,20 @@ const odexMarketsAbi = [
     "function orderbook() view returns (uint[100] memory, uint[100] memory, address[100] memory, uint[100] memory, uint[100] memory, address[100] memory)",
     "function limitOrderBuy(uint _amount, uint _price) returns (uint)",
     "function limitOrderSell(uint _amount, uint _price) returns (uint)",
+    "function cancelAllOrders()",
+    "function cancelBid(uint _i)",
+    "function cancelAsk(uint _i)",
+    "event Bid(uint amount, uint price, address trader, uint index)",
+    "event Ask(uint amount, uint price, address trader, uint index)",
+    "event CancelBid(uint amount, uint price, address trader, uint index)",
+    "event CancelAsk(uint amount, uint price, address trader, uint index)",
+    "event Sell(uint amount, uint price, address trader, address filler, uint index)",
+    "event Buy(uint amount, uint price, address trader, address filler, uint index)",
+
 ];
 
 const balanceLookup = async (assetSymbol) => {
-    const virtualWallet = loadWallet();
+    const virtualWallet = await loadWallet();
     const assets = JSON.parse(localStorage.assets);
     for (const asset of assets) {
         if (assetSymbol == asset.symbol) {
@@ -238,7 +381,7 @@ const withdraw = async (assetId) => {
     document.getElementById('withdraw-asset').innerHTML = asset.symbol;
     document.getElementById('button-withdraw-close').onclick = () => document.getElementById('withdraw').style.display = 'none';
     try {
-        const virtualWallet = loadWallet();
+        const virtualWallet = await loadWallet();
         const contract = new ethers.Contract(asset.address, erc20Abi, provider);
         const wei = await contract.balanceOf(virtualWallet.address);
         const qty = ethers.formatUnits(wei, asset.decimals);
@@ -253,8 +396,6 @@ const withdraw = async (assetId) => {
         const asset = assets[assetId];    
         const withdrawalAddress = document.getElementById('withdrawal-address').value;
         const rawAmount = document.getElementById('withdrawal-amount').value;
-        console.log(rawAmount, typeof rawAmount, 'rawAmount');
-        console.log(asset.decimals, typeof asset.decimals, 'asset.decimals');
         const amount = ethers.parseUnits(rawAmount, asset.decimals);
         if (!withdrawalAddress || rawAmount <= 0) {
             alert('Address or amount incorrectly formatted');
@@ -262,7 +403,7 @@ const withdraw = async (assetId) => {
             return false;
         }
         try {
-            const virtualWallet = loadWallet();
+            const virtualWallet = await loadWallet();
             const contract = new ethers.Contract(asset.address, erc20Abi, virtualWallet);
             const tx = await contract.transfer(address, amount);
             prompt('Transaction confirmed! TX Hash:', tx.hash);
@@ -297,7 +438,7 @@ const getWalletValue = async (address) => {
 }
 
 const wrapEth = async () => {
-    const virtualWallet = loadWallet();
+    const virtualWallet = await loadWallet();
     const balanceWei = await provider.getBalance(virtualWallet.address);
     const balanceEther = ethers.formatEther(balanceWei);
     const preAmount = prompt(`Enter an amount to wrap, do not wrap your entire balance as you will need some to pay gas fees. Balance: ${balanceEther} ETH`);
@@ -314,7 +455,7 @@ const wrapEth = async () => {
 }
 
 const unwrapEth = async () => {
-    const virtualWallet = loadWallet();
+    const virtualWallet = await loadWallet();
     const contract = new ethers.Contract(contracts.weth, erc20Abi, virtualWallet);
     const balanceWei = await contract.balanceOf(virtualWallet.address);
     const balanceWeth = ethers.formatEther(balanceWei);
@@ -338,7 +479,7 @@ const loadWallets = async () => {
         document.getElementById('content').innerHTML = responseText;
     });
     document.getElementById('top-right').innerHTML = socials;
-    document.getElementById('connected-wallets-link').onclick = () => alert('Coming Soon');
+    document.getElementById('connect-wallet-link').onclick = () => connectWallet();
     document.getElementById('import-tokens').onclick = () => alert('Coming Soon');
     document.getElementById('link-add-wallet').onclick = addWallet;
     document.getElementById('link-rename').onclick = renameWallet;
@@ -349,7 +490,8 @@ const loadWallets = async () => {
     document.getElementById('button-deposit-close').onclick = () => document.getElementById('deposit').style.display = 'none';
     document.getElementById('button-deposit-copy').onclick = () => copyToClipboard('deposit-address');
     document.getElementById('copy-wallet-address').onclick = () => copyToClipboard('wallet-address');
-    const virtualWallet = loadWallet();
+    const virtualWallet = await loadWallet();
+    if (virtualWallet.type == 'browser') document.getElementById('connect-wallet-link').innerHTML = `<div class="blue text-small">${virtualWallet.address.substr(0,12)}...</div>`;
     document.getElementById('wallet-address').innerHTML = virtualWallet.address;
     document.getElementById('deposit-address').innerHTML = virtualWallet.address;
     document.getElementById('deposit-qr').innerHTML = `<img src="https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=${virtualWallet.address}&choe=UTF-8" class="qr-code responsive-image" />`;
@@ -363,7 +505,7 @@ const loadWallets = async () => {
     }
     const walletValue = await getWalletValue(virtualWallet.address);
     if (!document.getElementById('wallet-value')) return false;
-    document.getElementById('wallet-value').innerHTML = `$${walletValue.toString()}`;
+    document.getElementById('wallet-value').innerHTML = formatUSD(walletValue);
     await fetch('./components/wallet-asset.html').then(response => response.text()).then(async (responseText) => {
         let aHTML = '';
         const assets = JSON.parse(localStorage.assets);
@@ -373,7 +515,7 @@ const loadWallets = async () => {
             if (asset.image) assetImage = `<img class="asset-icon" src="./images/${asset.image}" />`;
             const price = await priceLookup(asset.symbol);
             const divPrice = BigInt(price) / 1000000n;
-            const formattedPrice =  `$${divPrice.toString()}`;
+            const formattedPrice =  formatUSD(divPrice);
             let qty = 0;
             try {
                 const contract = new ethers.Contract(asset.address, erc20Abi, provider);
@@ -415,7 +557,7 @@ const loadWallets = async () => {
                     .replace('switch-wallet', walletId.toString())
                     .replace('<!-- wallet-name -->', dWallet.name)
                     .replace('<!-- wallet-address -->', dWallet.address)
-                    .replace('<!-- wallet-value -->', `$${dWalletValue.toString()}`);
+                    .replace('<!-- wallet-value -->', formatUSD(dWalletValue));
                 dwHTML += newHTML;
             }
             walletId += 1;
@@ -448,14 +590,14 @@ const loadTrade = async () => {
             const contract = new ethers.Contract(market.address, odexMarketsAbi, provider);
             const tvl = await contract.tvl();
             const divTVL = BigInt(tvl) / 1000000n;
-            const formattedTVL = `$${divTVL.toString()}`;
+            const formattedTVL = formatUSD(divTVL);
             document.getElementById('trade-liquidity').innerHTML = formattedTVL;
         } catch (e) {
             console.log('app.js e413 tvl failed');
         }
         const price = await priceLookup(market.token);
         const divPrice = BigInt(price) / 1000000n;
-        const formattedPrice =  `$${divPrice.toString()}`;
+        const formattedPrice = formatUSD(divPrice);
         document.getElementById('trade-price').innerHTML = formattedPrice;
     }
     const topMarket = `<div id="trade-market"><div class="market-title">${market.token}/${market.baseAsset}</div> <img src="./images/${market.image || 'market-misc.png'}" class="trade-icon" /></div>`;
@@ -475,6 +617,10 @@ const loadTrade = async () => {
     document.getElementById('amount-token-label').innerHTML = `Ammount ${market.token}`;
     document.getElementById('buy-button').innerHTML = `BUY ${market.token}`;
     document.getElementById('sell-button').innerHTML = `SELL ${market.token}`;
+    document.getElementById('orderbook-link').onclick = displayOrderBook;
+    document.getElementById('orders-link').onclick = displayOrders;
+    document.getElementById('trades-link').onclick = displayTrades;
+    document.getElementById('activity-link').onclick = displayActivity;
     document.getElementById('base-range').addEventListener("input", (e) => {
         document.getElementById('base-amount').innerHTML = e.target.value.toString().substr(0,8);
     });
@@ -482,40 +628,193 @@ const loadTrade = async () => {
         document.getElementById('token-amount').innerHTML = e.target.value.toString().substr(0,8);
     });
     document.getElementById('buy-button').onclick = () => {
-        localStorage.setItem('order',JSON.stringify({...market, type: 'BUY', amount: document.getElementById('base-range').value}));
+        localStorage.setItem('order',JSON.stringify({...market, type: 'BUY', amount: document.getElementById('base-amount').innerHTML}));
         loadOrder();
     }
     document.getElementById('sell-button').onclick = () => {
-        localStorage.setItem('order',JSON.stringify({...market, type: 'SELL', amount: document.getElementById('token-range').value}));
+        localStorage.setItem('order',JSON.stringify({...market, type: 'SELL', amount: document.getElementById('token-amount').innerHTML}));
         loadOrder();
+    }
+    displayOrderBook();
+    checkApprovals();
+
+    let tradingViewRef = false;
+    const knownMarkets = [
+        ['BTC','USD', 'COINBASE:BTCUSD'],
+        ['ETH','USD', 'COINBASE:ETHUSD'],
+    ];
+    for (const km of knownMarkets)
+        if (market.token.includes(km[0]) && market.baseAsset.includes(km[1])) tradingViewRef = km[2];
+    if (tradingViewRef) {
+        new TradingView.widget({
+            "autosize": true,
+            "symbol": tradingViewRef,
+            "interval": "60",
+            "timezone": "Etc/UTC",
+            "theme": "dark",
+            "style": "1",
+            "locale": "en",
+            "enable_publishing": false,
+            "hide_legend": true,
+            "hide_side_toolbar": false,
+            "save_image": false,
+            "container_id": "tradingview-chart"
+        });
+    } else {
+        document.getElementById('tradingview-chart').innerHTML = '<div class="text-small faded">NO TRADINGVIEW CHART AVAILABLE FOR THIS ASSET AT THIS TIME</div>';
+    }
+
+}
+
+const displayOrderBook = async () => {
+    document.querySelectorAll('.ob-link').forEach(a => a.classList.remove('blue'));
+    document.getElementById('orderbook-link').classList.add('blue');
+    const market = JSON.parse(localStorage.markets)[localStorage.lastMarket];
+    if (!document.getElementById(`bid-amount-0`)) {
+        const response = await fetch('./components/orderbook.html');
+        const responseText = await response.text();
+        document.getElementById('orderbook-container').innerHTML = responseText;
     }
     const ob = await refreshOrderBook();
     for (let i = 0; i < 6; i++) {
-        document.getElementById(`bid-amount-${i}`).innerHTML = ethers.formatUnits(ob.groupedBids[i][0].toString(), market.baseAssetDecimals).substr(0,6);
-        document.getElementById(`bid-price-${i}`).innerHTML = ethers.formatUnits(ob.groupedBids[i][1].toString(), market.baseAssetDecimals);
-        document.getElementById(`ask-amount-${i}`).innerHTML = ethers.formatUnits(ob.groupedAsks[i][0].toString(), market.tokenDecimals).substr(0,6);
-        document.getElementById(`ask-price-${i}`).innerHTML = ethers.formatUnits(ob.groupedAsks[i][1].toString(), market.baseAssetDecimals);
+        let el, value;
+        el = document.getElementById(`bid-amount-${i}`);
+        value = ethers.formatUnits(ob.groupedBids[i][0].toString(), market.baseAssetDecimals).substr(0,6);
+        const flashElements = [];
+        if (el.innerHTML !== '' && el.innerHTML !== value) flashElements.push(el);
+        el.innerHTML = value
+        el = document.getElementById(`bid-price-${i}`);
+        value = ethers.formatUnits(ob.groupedBids[i][1].toString(), market.baseAssetDecimals);
+        if (el.innerHTML !== '' && el.innerHTML !== value) flashElements.push(el);
+        el.innerHTML = value
+        el = document.getElementById(`ask-amount-${i}`);
+        value = ethers.formatUnits(ob.groupedAsks[i][0].toString(), market.tokenDecimals).substr(0,6);
+        if (el.innerHTML !== '' && el.innerHTML !== value) flashElements.push(el);
+        el.innerHTML = value
+        el = document.getElementById(`ask-price-${i}`);
+        value = ethers.formatUnits(ob.groupedAsks[i][1].toString(), market.baseAssetDecimals);
+        if (el.innerHTML !== '' && el.innerHTML !== value) flashElements.push(el);
+        el.innerHTML = value
+        for(const flashElement of flashElements) {
+            flashElement.classList.add('blue-bkg');
+            setTimeout((fid) => { document.getElementById(fid).classList.remove('blue-bkg'); },200, flashElement.id);
+            await new Promise(r => setTimeout(r, 50));
+        }
     }
-    checkApprovals();
-    const tradingViewAssets = {
-        'wBTC': 'COINBASE:BTCUSD',
-        'wETH': 'COINBASE:ETHUSD',
-        'ODEX': 'COINBASE:ODEXUSD',
+    setTimeout(() => {
+        if (document.getElementById('orderbook-link') && document.getElementById('orderbook-link').classList.contains('blue'))
+            displayOrderBook();
+    }, refreshRate);
+}
+
+const displayOrders = async () => {
+    document.querySelectorAll('.ob-link').forEach(a => a.classList.remove('blue'));
+    document.getElementById('orders-link').classList.add('blue');
+    const virtualWallet = await loadWallet();
+    const market = JSON.parse(localStorage.markets)[localStorage.lastMarket];
+    const contract = new ethers.Contract(market.address, odexMarketsAbi, provider);
+    const ob = await contract.orderbook();
+    let oHTML = `<table class="orderbook"><tbody><tr class="faded"><td>SIDE</td><td>PRICE</td><td>AMOUNT</td><td>CANCEL</tr>`;
+    for (let i = 0; i < 100; i++) {
+        if (ob[2][i] == virtualWallet.address)
+            oHTML += `<tr><td class="green">BUY</td><td>${ethers.formatUnits(ob[1][i].toString(), market.baseAssetDecimals)}</td><td>${ethers.formatUnits(ob[1][i].toString(), market.baseAssetDecimals).substr(0,6)}</td><td><button class="cancel-order button-small" data-bidask="bid" data-index="${i}">X</button></tr>`;
+        if (ob[5][i] == virtualWallet.address)
+            oHTML += `<tr><td class="red">SELL</td><td>${ethers.formatUnits(ob[4][i].toString(), market.baseAssetDecimals)}</td><td>${ethers.formatUnits(ob[3][i].toString(), market.baseAssetDecimals).substr(0,6)}</td><td><button class="cancel-order button-small" data-bidask="ask" data-index="${i}">X</button></tr>`;
     }
-    new TradingView.widget({
-        "autosize": true,
-        "symbol": tradingViewAssets[market.token],
-        "interval": "60",
-        "timezone": "Etc/UTC",
-        "theme": "dark",
-        "style": "1",
-        "locale": "en",
-        "enable_publishing": false,
-        "hide_legend": true,
-        "hide_side_toolbar": false,
-        "save_image": false,
-        "container_id": "tradingview-chart"
-  });
+    oHTML += `<tr><td></td><td></td><td></td><td><button id="cancel-all" class="button-small">ALL</button></td></tr></tbody></table>`
+    document.getElementById('orderbook-container').innerHTML = oHTML;
+    document.querySelectorAll('.cancel-order').forEach(a => a.addEventListener('click', async (e) => {
+        e.target.innerHTML = '...';
+        const orderbookIndex = e.target.getAttribute("data-index");
+        const bidAsk = e.target.getAttribute("data-bidask");
+        const virtualWallet = await loadWallet();
+        const market = JSON.parse(localStorage.markets)[localStorage.lastMarket];
+        const contract = new ethers.Contract(market.address, odexMarketsAbi, virtualWallet);
+        if (bidAsk == 'bid') {
+            const tx = await contract.cancelBid(orderbookIndex);
+            await tx.wait();
+        } else if (bidAsk == 'ask') {
+            const tx = await contract.cancelAsk(orderbookIndex);
+            await tx.wait();
+        }
+        displayOrders();
+    }));
+    document.getElementById('cancel-all').onclick = async () => {
+        document.getElementById('cancel-all').innerHTML = '...';
+        const virtualWallet = await loadWallet();
+        const market = JSON.parse(localStorage.markets)[localStorage.lastMarket];
+        const contract = new ethers.Contract(market.address, odexMarketsAbi, virtualWallet);
+        const tx = await contract.cancelAllOrders();
+        await tx.wait();
+        displayOrders();
+        document.getElementById('cancel-all').innerHTML = 'ALL';
+    }
+}
+
+const displayTrades = async () => {
+    document.querySelectorAll('.ob-link').forEach(a => a.classList.remove('blue'));
+    document.getElementById('trades-link').classList.add('blue');
+    document.getElementById('orderbook-container').innerHTML = '<div class="text-left text-small faded" id="display-trades"><span class="blue">&gt;</span> Listening...<br></div>';
+    const virtualWallet = await loadWallet();
+    const market = JSON.parse(localStorage.markets)[localStorage.lastMarket];
+    const contract = new ethers.Contract(market.address, odexMarketsAbi, virtualWallet);
+    contract.on('Buy', (amount, price, trader, filler, index) => {
+        if (!document.getElementById('display-trades')) contract.removeAllListeners('Buy');
+        const tHTML = `<span class="blue">&gt;</span> <span class="green">BUY</span> <span class="light">${ethers.formatUnits(amount.toString(), market.tokenDecimals)}</span> <span class="orange">${ethers.formatUnits(price.toString(), market.baseAssetDecimals)}</span> <a href="https://goerli.etherscan.io/address/${trader}" target="_blank">${trader.substr(0,9)}...</a> <span class="faded">&gt;</span> <a href="https://goerli.etherscan.io/address/${filler}" target="_blank">${filler.substr(0,9)}...</a><br>`;
+        const ocHTML = document.getElementById('display-trades').innerHTML;
+        document.getElementById('display-trades').innerHTML = tHTML + ocHTML;
+    });
+    contract.on('Sell', (amount, price, trader, filler, index) => {
+        if (!document.getElementById('display-trades')) contract.removeAllListeners('Sell');
+        const tHTML = `<span class="blue">&gt;</span> <span class="red">SELL</span> <span class="light">${ethers.formatUnits(amount.toString(), market.baseAssetDecimals)}</span> <span class="orange">${ethers.formatUnits(price.toString(), market.baseAssetDecimals)}</span> <a href="https://goerli.etherscan.io/address/${trader}" target="_blank">${trader.substr(0,9)}...</a> <span class="faded">&lt;</span> <a href="https://goerli.etherscan.io/address/${filler}" target="_blank">${filler.substr(0,9)}...</a><br>`;
+        const ocHTML = document.getElementById('display-trades').innerHTML;
+        document.getElementById('display-trades').innerHTML = tHTML + ocHTML;
+    });
+}
+
+const displayActivity = async () => {
+    document.querySelectorAll('.ob-link').forEach(a => a.classList.remove('blue'));
+    document.getElementById('activity-link').classList.add('blue');
+    document.getElementById('orderbook-container').innerHTML = '<div class="text-left text-small faded" id="display-activity"><span class="blue">&gt;</span> Listening...<br></div>';
+    const virtualWallet = await loadWallet();
+    const market = JSON.parse(localStorage.markets)[localStorage.lastMarket];
+    const contract = new ethers.Contract(market.address, odexMarketsAbi, virtualWallet);
+    contract.on('Buy', (amount, price, trader, filler, index) => {
+        if (!document.getElementById('display-activity')) contract.removeAllListeners('Buy');
+        const tHTML = `<span class="blue">&gt;</span> <span class="green">BUY</span> <span class="light">${ethers.formatUnits(amount.toString(), market.tokenDecimals)}</span> <span class="orange">${ethers.formatUnits(price.toString(), market.baseAssetDecimals)}</span> <a href="https://goerli.etherscan.io/address/${trader}" target="_blank">${trader.substr(0,9)}...</a> <span class="faded">&gt;</span> <a href="https://goerli.etherscan.io/address/${filler}" target="_blank">${filler.substr(0,9)}...</a><br>`;
+        const ocHTML = document.getElementById('display-activity').innerHTML;
+        document.getElementById('display-activity').innerHTML = tHTML + ocHTML;
+    });
+    contract.on('Sell', (amount, price, trader, filler, index) => {
+        if (!document.getElementById('display-activity')) contract.removeAllListeners('Sell');
+        const tHTML = `<span class="blue">&gt;</span> <span class="red">SELL</span> <span class="light">${ethers.formatUnits(amount.toString(), market.baseAssetDecimals)}</span> <span class="orange">${ethers.formatUnits(price.toString(), market.baseAssetDecimals)}</span> <a href="https://goerli.etherscan.io/address/${trader}" target="_blank">${trader.substr(0,9)}...</a> <span class="faded">&lt;</span> <a href="https://goerli.etherscan.io/address/${filler}" target="_blank">${filler.substr(0,9)}...</a><br>`;
+        const ocHTML = document.getElementById('display-activity').innerHTML;
+        document.getElementById('display-activity').innerHTML = tHTML + ocHTML;
+    });   
+    contract.on('Bid', (amount, price, trader, index) => {
+        if (!document.getElementById('display-activity')) contract.removeAllListeners('Bid');
+        const tHTML = `<span class="blue">&gt;</span> <span class="blue">BID</span> <span class="light">${ethers.formatUnits(amount.toString(), market.baseAssetDecimals)}</span> <span class="orange">${ethers.formatUnits(price.toString(), market.baseAssetDecimals)}</span> <a href="https://goerli.etherscan.io/address/${trader}" target="_blank">${trader.substr(0,9)}...</a><br>`;
+        const ocHTML = document.getElementById('display-activity').innerHTML;
+        document.getElementById('display-activity').innerHTML = tHTML + ocHTML;
+    });
+    contract.on('Ask', (amount, price, trader, index) => {
+        if (!document.getElementById('display-activity')) contract.removeAllListeners('Ask');
+        const tHTML = `<span class="blue">&gt;</span> <span class="blue">ASK</span> <span class="light">${ethers.formatUnits(amount.toString(), market.tokenDecimals)}</span> <span class="orange">${ethers.formatUnits(price.toString(), market.baseAssetDecimals)}</span> <a href="https://goerli.etherscan.io/address/${trader}" target="_blank">${trader.substr(0,9)}...</a><br>`;
+        const ocHTML = document.getElementById('display-activity').innerHTML;
+        document.getElementById('display-activity').innerHTML = tHTML + ocHTML;
+    });
+    contract.on('CancelBid', (amount, price, trader, index) => {
+        if (!document.getElementById('display-activity')) contract.removeAllListeners('CancelBid');
+        const tHTML = `<span class="blue">&gt;</span> <span class="grey">CANCEL BID</span> <span class="light">${ethers.formatUnits(amount.toString(), market.baseAssetDecimals)}</span> <span class="orange">${ethers.formatUnits(price.toString(), market.baseAssetDecimals)}</span> <a href="https://goerli.etherscan.io/address/${trader}" target="_blank">${trader.substr(0,9)}...</a><br>`;
+        const ocHTML = document.getElementById('display-activity').innerHTML;
+        document.getElementById('display-activity').innerHTML = tHTML + ocHTML;
+    });
+    contract.on('CancelAsk', (amount, price, trader, index) => {
+        if (!document.getElementById('display-activity')) contract.removeAllListeners('CancelAsk');
+        const tHTML = `<span class="blue">&gt;</span> <span class="grey">CANCEL ASK</span> <span class="light">${ethers.formatUnits(amount.toString(), market.tokenDecimals)}</span> <span class="orange">${ethers.formatUnits(price.toString(), market.baseAssetDecimals)}</span> <a href="https://goerli.etherscan.io/address/${trader}" target="_blank">${trader.substr(0,9)}...</a><br>`;
+        const ocHTML = document.getElementById('display-activity').innerHTML;
+        document.getElementById('display-activity').innerHTML = tHTML + ocHTML;
+    });
 }
 
 const refreshOrderBook = async () => {
@@ -608,21 +907,21 @@ const updatePrice = async () => {
     if (order.type == 'BUY') {
         if (priceRange.value < 2) fill = `<span class="red">0%</span>`;
         if (priceRange.value > 5) fill = `<span class="green">100%</span>`;
-        document.getElementById('amount-in').innerHTML = `${order.amount} ${order.baseAsset}`;
+        document.getElementById('amount-in').innerHTML = `${order.amount.substr(0,12)}<span class="text-small"> ${order.baseAsset}</span>`;
         const amountOut = ethers.parseUnits(order.amount.toString(), order.baseAssetDecimals) * ethers.parseUnits('1',order.tokenDecimals) / order.price;
         let afterFees = amountOut;
         if (priceRange.value > 5) afterFees = afterFees * 999n / 1000n;
-        document.getElementById('amount-out').innerHTML = `${ethers.formatUnits(amountOut, order.tokenDecimals).toString().substr(0,12)} ${order.token}`;
+        document.getElementById('amount-out').innerHTML = `${ethers.formatUnits(amountOut, order.tokenDecimals).toString().substr(0,12)}<span class="text-small"> ${order.token}</span>`;
         document.getElementById('after-fees').innerHTML = `${ethers.formatUnits(afterFees, order.tokenDecimals).toString().substr(0,12)}`;
         order.amountString = ethers.parseUnits(order.amount, order.baseAssetDecimals).toString();
     } else if (order.type == 'SELL') {
         if (priceRange.value > 9) fill = `<span class="red">0%</span>`;
         if (priceRange.value < 6) fill = `<span class="green">100%</span>`;
-        document.getElementById('amount-in').innerHTML = `${order.amount} ${order.token}`;
+        document.getElementById('amount-in').innerHTML = `${order.amount.substr(0,12)}<span class="text-small"> ${order.token}</span>`;
         const amountOut = ethers.parseUnits(order.amount.toString(), order.tokenDecimals) * order.price / ethers.parseUnits('1',order.tokenDecimals);
         let afterFees = amountOut;
         if (priceRange.value > 5) afterFees = afterFees * 999n / 1000n;
-        document.getElementById('amount-out').innerHTML = `${ethers.formatUnits(amountOut, order.baseAssetDecimals).toString().substr(0,12)} ${order.baseAsset}`;
+        document.getElementById('amount-out').innerHTML = `${ethers.formatUnits(amountOut, order.baseAssetDecimals).toString().substr(0,12)}<span class="text-small"> ${order.baseAsset}</span>`;
         document.getElementById('after-fees').innerHTML = `${ethers.formatUnits(afterFees, order.baseAssetDecimals).toString().substr(0,12)}`;
         order.amountString = ethers.parseUnits(order.amount, order.tokenDecimals).toString();
     }
@@ -634,7 +933,7 @@ const updatePrice = async () => {
 
 const checkApprovals = async () => {
     const market = JSON.parse(localStorage.markets)[localStorage.lastMarket];
-    const virtualWallet = loadWallet();
+    const virtualWallet = await loadWallet();
     const maxUint256 = BigInt('0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff');
     const baseAsset = new ethers.Contract(market.baseAssetAddress, erc20Abi, virtualWallet);
     const baseBalance = await baseAsset.balanceOf(virtualWallet.address);
@@ -659,9 +958,9 @@ const checkApprovals = async () => {
 const confirmOrder = async () => {
     document.getElementById('confirm-buttons').innerHTML = '<p class="text-center faded">BROADCASTING...</p>'
     const order = JSON.parse(localStorage.order);
-    const virtualWallet = loadWallet();
-    console.log(order);
+    const virtualWallet = await loadWallet();
     const odexMarket = new ethers.Contract(order.address, odexMarketsAbi, virtualWallet);
+    order.priceString = ethers.parseUnits(document.getElementById('price-confirm').innerHTML, order.baseAssetDecimals);
     if (order.type == 'BUY') {  
         const tx1 = await odexMarket.limitOrderBuy(order.amountString, order.priceString);
         await tx1.wait();
@@ -671,7 +970,7 @@ const confirmOrder = async () => {
         await  tx2.wait();
         prompt('SELL Confirmed! TX Hash:', tx2.hash);
     }
-    loadWallets();
+    loadTrade();
 }
 
 const loadOrder = async () => {
@@ -686,6 +985,8 @@ const loadOrder = async () => {
     document.getElementById('order-cancel').onclick = loadTrade;
     document.getElementById('order-confirm').onclick = confirmOrder;
     if (order.type == 'SELL') document.getElementById('price-range').value = 5;
+    const virtualWallet = await loadWallet();
+    document.getElementById('order-wallet-name').innerHTML = virtualWallet.name;
     updatePrice();
 }
 
@@ -701,22 +1002,13 @@ const setupApp = async () => {
     }));
     if (!localStorage.wallets) await initAccount();
     loadWallets();
-    //localStorage.setItem('order',JSON.stringify({ type: 'BUY', amount: 500, token: 'wETH', baseAsset: 'USDC', poolId: 1, address: contracts.wethMarket, image: 'market-wethusdc.png', tokenDecimals: 18, baseAssetDecimals: 6 }));
+    //localStorage.setItem('order',JSON.stringify({ type: 'BUY', amount: 500, token: 'wETH', baseAsset: 'USDC', marketId: 1, address: contracts.wethMarket, image: 'market-wethusdc.png', tokenDecimals: 18, baseAssetDecimals: 6 }));
     //loadTrade()
 }
 
-const formattedNumber = (n) => {
-    return n.toLocaleString('en-US', {
-        style: 'currency',
-        currency: 'USD',
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0
-    });
-}    
-
 const setupIndex = async () => {
-    document.getElementById('whitepaper-button').onclick = () => {
-        window.open('./ODEXwhitepaper.pdf');
+    document.getElementById('docs-button').onclick = () => {
+        window.open('https://odexfi.gitbook.io/docs/');
     }
     document.getElementById('install-button').onclick = () => {
         document.getElementById('install').style.display = 'flex';
@@ -741,9 +1033,9 @@ const setupIndex = async () => {
     try {
         const contract = new ethers.Contract(contracts.odex, odexAbi, provider);
         const tvl = await contract.tvl();
-        document.getElementById('index-tvl').innerHTML = formattedNumber(Number(ethers.formatUnits(tvl, 6)));
+        document.getElementById('index-tvl').innerHTML = formatUSD(Number(ethers.formatUnits(tvl, 6)));
         const volume = await contract.volume();
-        document.getElementById('index-volume').innerHTML = formattedNumber(Number(ethers.formatUnits(volume, 6)));
+        document.getElementById('index-volume').innerHTML = formatUSD(Number(ethers.formatUnits(volume, 6)));
         const odexCount = await contract.odexCount();
         document.getElementById('index-markets').innerHTML = odexCount;
     } catch (e) {
