@@ -141,11 +141,9 @@ hr {
     font-size: 16px;
 }
 
-
 .text-small {
     font-size: 11px;
 }
-
 
 .flex-column {
     display: flex;
@@ -505,6 +503,11 @@ input[type="range"]::-webkit-slider-thumb {
 .index-section {
     width: 92%;
     margin: 2% auto;
+}
+
+#tagline {
+    max-width: 400px;
+    margin: 0px auto;
 }
 
 .index-stats {
