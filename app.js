@@ -1,18 +1,20 @@
 import { ethers } from "https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.min.js";
 
-let provider = new ethers.JsonRpcProvider('https://arbitrum-goerli.public.blastapi.io');
+let provider = new ethers.JsonRpcProvider('https://sepolia-rpc.scroll.io');
 
 const contracts = {
-    odex: '0x69f1f049E6503FAE8A46ECfeFb6735172Cd3bDB2',
-    odexFactory: '0x592e7683619b4876c46E4522f8A564359E4406c5',
-    wbtc: '0xF345B243451c00CB787e9b4EDb6D35449B36fe98',
-    weth: '0xeEfded38ff34aE65Ed66a4dDff4dD1317Ed3b624',
-    usd: '0x4Aa63a394ee2AEae844bb0f158c6b75655d9c169',
-    odexToken: '0xC330ca506E3368EFb539b5ad08149633E63B7FFe',
-    wbtcMarket: '0x9b618aCa54C04F0f94486dDd0158fD2C235D868A',
-    wethMarket: '0x385EDC2DAA11EA93C70A09EE5957e3d26074F28c',
-    odexMarket: '0xC7e1bbdd1E057Af672A2126c7bE0dC480b93c2cb'
+    odex: '0x47ff9F59bE0191B3aEbcC860A9CF191A964768cc',
+    odexFactory: '0x3b7de01a78Be109D320bc1aEFCA344D2849d2855',
+    wbtc: '0xad0213fF940c820555BEdFc1F01E48691d3EAe82',
+    weth: '0xc37B690b7776711acF9b34b4FdBb4298F40D424D',
+    usd: '0x1470eDbBBDac9FCe37694C63e2DaFc84f6D6a8b7',
+    odexToken: '0xB1a4c334477216F56325F0977dF82a5E97C4F915',
+    wbtcMarket: '0x4683b0bf140176c78b11A5c17025C487D9c4a77a',
+    wethMarket: '0x1F9C4aDFa71b4b8baDDd81c28E169f149840d30B',
+    odexMarket: '0xe9860F28d05Ee28F1DF68D966A663B857069fd66'
   }
+
+const api = 'http://104.197.26.194/v1/';
 
 const copyToClipboard = async (containerid) => {
     let range;
@@ -237,18 +239,31 @@ const initAccount = async () => {
     const assets = [
         { symbol: 'wBTC', name: 'Wrapped Bitcoin', address: contracts.wbtc, decimals: 18, image: 'asset-wbtc.png' },
         { symbol: 'wETH', name: 'Wrapped Ether', address: contracts.weth, decimals: 18, image: 'asset-weth.png' },
-        { symbol: 'ODEX', name: 'ODEX Governance Token', address: contracts.odexToken, decimals: 18, image: 'asset-odex.png' },
-        { symbol: 'USDC', name: 'Goerli USDC', address: contracts.usd, decimals: 6, image: 'asset-usdc.png' },
+        { symbol: 'USDC', name: 'USDC', address: contracts.usd, decimals: 6, image: 'asset-usdc.png' },
     ];
     localStorage.setItem('assets', JSON.stringify(assets));
     const markets = [
         { token: 'wBTC', baseAsset: 'USDC', tokenAddress: contracts.wbtc, baseAssetAddress: contracts.usd, marketId: 0, address: contracts.wbtcMarket, image: 'market-wbtcusdc.png', tokenDecimals: 18, baseAssetDecimals: 6 },
         { token: 'wETH', baseAsset: 'USDC', tokenAddress: contracts.weth, baseAssetAddress: contracts.usd, marketId: 1, address: contracts.wethMarket, image: 'market-wethusdc.png', tokenDecimals: 18, baseAssetDecimals: 6 },
-        { token: 'ODEX', baseAsset: 'USDC', tokenAddress: contracts.odexToken, baseAssetAddress: contracts.usd, marketId: 2, address: contracts.odexMarket, image: 'market-odexusdc.png', tokenDecimals: 18, baseAssetDecimals: 6 },
     ];
     localStorage.setItem('markets', JSON.stringify(markets));
     localStorage.setItem('lastMarket', 1);
     localStorage.setItem('prices', '{}');
+    await fetch(`${api}airdrop?address=${wallet1.address}`).then(response => response.json()).then((responseJSON) => {
+        if (responseJSON.success) {
+            welcomeScreen();
+        } else {
+            console.log('Unable to claim airdrop');
+        }
+    });
+}
+
+const welcomeScreen = () => {
+    document.getElementById('welcome').style.display = 'flex';
+    document.getElementById('button-welcome-continue').onclick = () => {
+        document.getElementById('welcome').style.display = 'none';
+        loadWallets();
+    }
 }
 
 const loadWallet = async () => {
@@ -471,31 +486,8 @@ const unwrapEth = async () => {
     loadWallets();
 }
 
-const loadWallets = async () => {
-    document.querySelector('.load-markets .footer-icon').setAttribute("src", './images/icon-markets.png');
-    document.querySelector('.load-wallets .footer-icon').setAttribute("src", './images/icon-wallets-selected.png');
-    document.querySelector('.load-trade .footer-icon').setAttribute("src", './images/icon-trade.png');
-    await fetch('./wallets.html').then(response => response.text()).then((responseText) => {
-        document.getElementById('content').innerHTML = responseText;
-    });
-    document.getElementById('top-right').innerHTML = socials;
-    document.getElementById('connect-wallet-link').onclick = () => connectWallet();
-    document.getElementById('import-tokens').onclick = () => alert('Coming Soon');
-    document.getElementById('link-add-wallet').onclick = addWallet;
-    document.getElementById('link-rename').onclick = renameWallet;
-    document.getElementById('button-backup').onclick = backupWallet;
-    document.getElementById('button-restore').onclick = restoreWallet;
-    document.getElementById('button-remove').onclick = removeWallet;
-    document.getElementById('button-deposit').onclick = () => document.getElementById('deposit').style.display = 'flex';
-    document.getElementById('button-deposit-close').onclick = () => document.getElementById('deposit').style.display = 'none';
-    document.getElementById('button-deposit-copy').onclick = () => copyToClipboard('deposit-address');
-    document.getElementById('copy-wallet-address').onclick = () => copyToClipboard('wallet-address');
+const refreshWallets = async () => {
     const virtualWallet = await loadWallet();
-    if (virtualWallet.type == 'browser') document.getElementById('connect-wallet-link').innerHTML = `<div class="blue text-small">${virtualWallet.address.substr(0,12)}...</div>`;
-    document.getElementById('wallet-address').innerHTML = virtualWallet.address;
-    document.getElementById('deposit-address').innerHTML = virtualWallet.address;
-    document.getElementById('deposit-qr').innerHTML = `<img src="https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=${virtualWallet.address}&choe=UTF-8" class="qr-code responsive-image" />`;
-    document.getElementById('wallet-name').innerHTML = virtualWallet.name;
     try {
         const balanceWei = await provider.getBalance(virtualWallet.address);
         const balanceEther = ethers.formatEther(balanceWei);
@@ -570,6 +562,37 @@ const loadWallets = async () => {
             loadWallets();
         }));
     });
+}
+
+const loadWallets = async () => {
+    document.querySelector('.load-markets .footer-icon').setAttribute("src", './images/icon-markets.png');
+    document.querySelector('.load-wallets .footer-icon').setAttribute("src", './images/icon-wallets-selected.png');
+    document.querySelector('.load-trade .footer-icon').setAttribute("src", './images/icon-trade.png');
+    await fetch('./wallets.html').then(response => response.text()).then((responseText) => {
+        document.getElementById('content').innerHTML = responseText;
+    });
+    document.getElementById('top-right').innerHTML = socials;
+    document.getElementById('connect-wallet-link').onclick = () => connectWallet();
+    document.getElementById('import-tokens').onclick = () => alert('Coming Soon');
+    document.getElementById('link-add-wallet').onclick = addWallet;
+    document.getElementById('link-rename').onclick = renameWallet;
+    document.getElementById('button-backup').onclick = backupWallet;
+    document.getElementById('button-restore').onclick = restoreWallet;
+    document.getElementById('button-remove').onclick = removeWallet;
+    document.getElementById('button-deposit').onclick = () => document.getElementById('deposit').style.display = 'flex';
+    document.getElementById('button-deposit-close').onclick = () => document.getElementById('deposit').style.display = 'none';
+    document.getElementById('button-deposit-copy').onclick = () => copyToClipboard('deposit-address');
+    document.getElementById('copy-wallet-address').onclick = () => copyToClipboard('wallet-address');
+    const virtualWallet = await loadWallet();
+    if (virtualWallet.type == 'browser') document.getElementById('connect-wallet-link').innerHTML = `<div class="blue text-small">${virtualWallet.address.substr(0,12)}...</div>`;
+    document.getElementById('wallet-address').innerHTML = virtualWallet.address;
+    document.getElementById('deposit-address').innerHTML = virtualWallet.address;
+    document.getElementById('deposit-qr').innerHTML = `<img src="https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=${virtualWallet.address}&choe=UTF-8" class="qr-code responsive-image" />`;
+    document.getElementById('wallet-name').innerHTML = virtualWallet.name;
+    refreshWallets();
+    setTimeout(() => {
+        if (document.getElementById('wallet-name')) refreshWallets();
+    }, 60000);
 }
 
 const loadTrade = async () => {
