@@ -14,7 +14,7 @@ const contracts = {
     odexMarket: '0xe9860F28d05Ee28F1DF68D966A663B857069fd66'
   }
 
-const api = 'http://104.197.26.194/v1/';
+const api = 'https://api.odex.fi/v1/';
 
 const copyToClipboard = async (containerid) => {
     let range;
