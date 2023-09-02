@@ -1023,10 +1023,8 @@ const setupApp = async () => {
     document.querySelectorAll('.load-trade').forEach(a => a.addEventListener('click', e => {
         loadTrade();
     }));
-    if (!localStorage.wallets) await initAccount();
     loadWallets();
-    //localStorage.setItem('order',JSON.stringify({ type: 'BUY', amount: 500, token: 'wETH', baseAsset: 'USDC', marketId: 1, address: contracts.wethMarket, image: 'market-wethusdc.png', tokenDecimals: 18, baseAssetDecimals: 6 }));
-    //loadTrade()
+    if (!localStorage.wallets) await initAccount();
 }
 
 const setupIndex = async () => {
