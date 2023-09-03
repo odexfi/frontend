@@ -1,18 +1,18 @@
 import { ethers } from "https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethers.min.js";
 
-let provider = new ethers.JsonRpcProvider('https://sepolia-rpc.scroll.io');
+let provider = new ethers.JsonRpcProvider('https://sepolia-rollup.arbitrum.io/rpc');
 
 const contracts = {
-    odex: '0x47ff9F59bE0191B3aEbcC860A9CF191A964768cc',
-    odexFactory: '0x3b7de01a78Be109D320bc1aEFCA344D2849d2855',
-    wbtc: '0xad0213fF940c820555BEdFc1F01E48691d3EAe82',
-    weth: '0xc37B690b7776711acF9b34b4FdBb4298F40D424D',
-    usd: '0x1470eDbBBDac9FCe37694C63e2DaFc84f6D6a8b7',
-    odexToken: '0xB1a4c334477216F56325F0977dF82a5E97C4F915',
-    wbtcMarket: '0x4683b0bf140176c78b11A5c17025C487D9c4a77a',
-    wethMarket: '0x1F9C4aDFa71b4b8baDDd81c28E169f149840d30B',
-    odexMarket: '0xe9860F28d05Ee28F1DF68D966A663B857069fd66'
-  }
+    odex: '0x299FEB7AE7d993a333b7775b3b8a4bDf04531DfF',
+    odexFactory: '0x7cE20010Cf28582f015Bd94dbe2050C7dE2D6509',
+    wbtc: '0x806D0637Fbbfb4EB9efD5119B0895A5C7Cbc66e7',
+    weth: '0x7331d7864ad4d32F1EBE86E26Dcba90787503757',
+    usd: '0xe97A5e6C4670DD6fDeA0B5C3E304110eB0e599d9',
+    odexToken: '0xb553A8a4aB3Baf31210d75c1e7B496d90ab74Afa',
+    wbtcMarket: '0xBc9D59a6fc9c3B5dc953a9235E4a31bf72E75ea7',
+    wethMarket: '0x85Cd521cc0380153106D4d4EbcfB47F20894e81c',
+    odexMarket: '0x76bF2F4D9aAc71e5f216dfC0ba122d2Dd6128962'
+}
 
 const api = 'https://api.odex.fi/v1/';
 
