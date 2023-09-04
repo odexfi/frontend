@@ -68,7 +68,13 @@ const copyToClipboard = async (containerid) => {
 
 const refreshRate = 15 * 1000;
 
-const formatUSD = (n) => Number(n).toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
+const formatUSD = (n) => {
+    const divPrice = BigInt(n) / 1000000n;
+    let usd = Number(divPrice).toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 });
+    if (BigInt(n) < 100000000n) usd = `$${(parseFloat(n) / 1000000).toFixed(2)}`;
+    if (BigInt(n) < 1000000n) usd = `$${(parseFloat(n) / 1000000).toFixed(6)}`;
+    return usd;
+}
 
 const socials = `<div class="flex-rown flex-end"><a href="https://twitter.com/odexfi" target="_blank"><img src="./images/twitter.png" class="social-icon" /></a><a href="https://github.com/odexfi" target="_blank"><img src="./images/github.png" class="social-icon" /></a><a href="https://odex.substack.com" target="_blank"><img src="./images/newsletter.png" class="social-icon" /></a><a href="https://odexfi.gitbook.io/docs/" target="_blank"><img src="./images/docs.png" class="social-icon" /></a></div>`;
 
@@ -93,9 +99,7 @@ const loadMarkets = async () => {
             if (market.image) marketImage = `<img class="market-icon" src="./images/${market.image}" />`;
             const marketPair = `${market.token}/${market.baseAsset}`;
             const price = await priceLookup(market.token);
-            const divPrice = BigInt(price) / 1000000n;
-            let formattedPrice = formatUSD(divPrice);
-            if (formattedPrice == '$0') formattedPrice = (parseFloat(price) / 1000000).toFixed(6);
+            const formattedPrice = formatUSD(price);
             const buttons = `<button class="button-close red-bkg remove-market" data-market="${index}">X</button> <button class="button-small trade-button" data-market="${index}">TRADE</button>`;
             mHTML += responseText
             .replace('<!-- market-image -->', marketImage)
@@ -141,7 +145,7 @@ const listMarkets = async (tokenFilter=false) => {
         const baseAssetSymbol = await baseAsset.symbol();
         const baseAssetDecimals = await baseAsset.decimals();
         let volume = Number(ethers.formatUnits(oi[11].toString(),baseAssetDecimals)).toFixed();
-        if (baseAssetSymbol.includes('USD')) volume = formatUSD(volume);
+        if (baseAssetSymbol.includes('USD')) volume = formatUSD(BigInt(oi[11].toString()));
         const token = new ethers.Contract(oi[2], erc20Abi, provider);
         const tokenSymbol = await token.symbol();
         const baseAssetLink = `<span class="green">${baseAssetSymbol}</span> <a href="https://goerli.etherscan.io/token/${oi[3]}" target="_blank">${oi[3].substr(0,8)}</a>`;
@@ -497,7 +501,7 @@ const getWalletValue = async (address) => {
             }
             const balance = ethers.formatUnits(wei, asset.decimals);
             const price = await priceLookup(asset.symbol);
-            const addition = BigInt(Math.round((Number(balance) * Number(price)))) / 1000000n;
+            const addition = BigInt(Math.round((Number(balance) * Number(price))));
             value += addition;
         } catch (e) {
             console.log('app.js e183 getWalletValue failed',e)
@@ -674,7 +678,6 @@ const importTokens = async () => {
     document.getElementById('add-custom-token').onclick = async () => {
         const tokenAddress = document.getElementById('custom-token-address').value;
         await addToken(tokenAddress);
-        document.getElementById('import-new-token').style.display = 'none';
     }
     document.getElementById('cancel-new-token').onclick = () => {
         document.getElementById('import-new-token').style.display = 'none';
@@ -690,7 +693,6 @@ const importTokens = async () => {
         e.target.innerHTML = '...';
         const tokenAddress = e.target.getAttribute("data-address");
         await addToken(tokenAddress);
-        document.getElementById('import-new-token').style.display = 'none';
     }));
 }
 
@@ -710,6 +712,8 @@ const addToken = async (address) => {
     const assets = JSON.parse(localStorage.assets);
     assets.push(newAsset);
     localStorage.setItem('assets', JSON.stringify(assets));
+    document.getElementById('import-new-token').style.display = 'none';
+    loadWallets();
 }
 
 const loadTrade = async () => {
@@ -729,15 +733,13 @@ const loadTrade = async () => {
         try {
             const contract = new ethers.Contract(market.address, odexMarketsAbi, provider);
             const tvl = await contract.tvl();
-            const divTVL = BigInt(tvl) / 1000000n;
-            const formattedTVL = formatUSD(divTVL);
+            const formattedTVL = formatUSD(BigInt(tvl));
             document.getElementById('trade-liquidity').innerHTML = formattedTVL;
         } catch (e) {
             console.log('app.js e413 tvl failed');
         }
         const price = await priceLookup(market.token);
-        const divPrice = BigInt(price) / 1000000n;
-        let formattedPrice = formatUSD(divPrice);
+        let formattedPrice = formatUSD(price);
         if (formattedPrice == '$0') formattedPrice = (parseFloat(price) / 1000000).toFixed(6);
         document.getElementById('trade-price').innerHTML = formattedPrice;
     }
@@ -1189,9 +1191,9 @@ const setupIndex = async () => {
     try {
         const contract = new ethers.Contract(contracts.odex, odexAbi, provider);
         const tvl = await contract.tvl();
-        document.getElementById('index-tvl').innerHTML = formatUSD(Number(ethers.formatUnits(tvl, 6)));
+        document.getElementById('index-tvl').innerHTML = formatUSD(tvl);
         const volume = await contract.volume();
-        document.getElementById('index-volume').innerHTML = formatUSD(Number(ethers.formatUnits(volume, 6)));
+        document.getElementById('index-volume').innerHTML = formatUSD(volume);
         const odexCount = await contract.odexCount();
         document.getElementById('index-markets').innerHTML = odexCount;
     } catch (e) {
