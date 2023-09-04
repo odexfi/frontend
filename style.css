@@ -317,7 +317,7 @@ hr {
     font-size: 10px;
 }
 
-/* Wallets */
+/* wallets.html */
 
 .market-title {
     display: inline-block;
@@ -366,6 +366,10 @@ hr {
 #button-deposit {
     width: 50%;
     margin: 10px auto;
+}
+
+.additional-asset-icon {
+    height: 60px;
 }
 
 /* trade.html */

@@ -682,7 +682,7 @@ const importTokens = async () => {
 
     let aHTML = '<table>';
     for (const asset of additionalAssets ) {
-        aHTML += `<tr><td><img src="./images/${asset.image}" /></td><td>${asset.symbol}</td><td><button class="add-additional-token" data-address="${asset.address}">ADD</button>`;
+        aHTML += `<tr><td><img src="./images/${asset.image}" class="additional-asset-icon" /></td><td>${asset.symbol}</td><td><button class="add-additional-token" data-address="${asset.address}">ADD</button>`;
     }
     aHTML += '<table>';
     document.getElementById('additional-tokens').innerHTML = aHTML;
