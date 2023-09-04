@@ -654,6 +654,7 @@ const loadWallets = async () => {
 }
 
 const additionalAssets = [
+    { symbol: 'ODEX', name: 'ODEX Finance', address: contracts.odexToken, decimals: 18, image: 'asset-odex.png' },
     { symbol: 'DOGE', name: 'Dogecoin', address: contracts.doge, decimals: 18, image: 'asset-doge.png' },
     { symbol: 'MATIC', name: 'Polygon Matic', address: contracts.matic, decimals: 18, image: 'asset-matic.png' },
     { symbol: 'SHIB', name: 'Shiba Inu', address: contracts.shib, decimals: 18, image: 'asset-shib.png' },
