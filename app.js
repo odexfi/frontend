@@ -107,21 +107,22 @@ const loadMarkets = async () => {
             .replace('<!-- market-price -->', formattedPrice)
             .replace('<!-- market-buttons -->', buttons);
             index += 1;
+            if (!document.getElementById('markets-container')) return;
             document.getElementById('markets-container').innerHTML = mHTML;
+            document.querySelectorAll('.trade-button').forEach(a => a.addEventListener('click', e => {
+                const marketIndex = e.target.getAttribute("data-market");
+                localStorage.setItem('lastMarket', marketIndex);
+                loadTrade();
+            }));
+            document.querySelectorAll('.remove-market').forEach(a => a.addEventListener('click', e => {
+                const marketIndex = e.target.getAttribute("data-market");
+                const markets = JSON.parse(localStorage.markets);
+                markets.splice(marketIndex, 1);
+                localStorage.setItem('markets', JSON.stringify(markets));
+                loadMarkets();
+            }));
         }
     });
-    document.querySelectorAll('.trade-button').forEach(a => a.addEventListener('click', e => {
-        const marketIndex = e.target.getAttribute("data-market");
-        localStorage.setItem('lastMarket', marketIndex);
-        loadTrade();
-    }));
-    document.querySelectorAll('.remove-market').forEach(a => a.addEventListener('click', e => {
-        const marketIndex = e.target.getAttribute("data-market");
-        const markets = JSON.parse(localStorage.markets);
-        markets.splice(marketIndex, 1);
-        localStorage.setItem('markets', JSON.stringify(markets));
-        loadMarkets();
-    }));
     document.getElementById('link-top-markets').onclick = loadMarkets;
     document.getElementById('link-latest-markets').onclick = () => listMarkets();
     document.getElementById('find-market').onclick = findMarket;
