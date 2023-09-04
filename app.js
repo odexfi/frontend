@@ -104,8 +104,8 @@ const loadMarkets = async () => {
             .replace('<!-- market-price -->', formattedPrice)
             .replace('<!-- market-buttons -->', buttons);
             index += 1;
+            document.getElementById('markets-container').innerHTML = mHTML;
         }
-        document.getElementById('markets-container').innerHTML = mHTML; 
     });
     document.querySelectorAll('.trade-button').forEach(a => a.addEventListener('click', e => {
         const marketIndex = e.target.getAttribute("data-market");
