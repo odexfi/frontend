@@ -424,6 +424,7 @@ const priceLookup = async (assetSymbol) => {
     if (prices && prices[assetSymbol] && prices[assetSymbol].lastUpdate > unixTimestamp - 60) {
         return prices[assetSymbol].price;
     }
+    const markets = JSON.parse(localStorage.markets);
     let odexAddress;
     for (const market of markets) {
         if (market.token.toLowerCase().includes(assetSymbol.toLowerCase())) odexAddress = market.address;
