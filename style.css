@@ -18,6 +18,10 @@
 }
 .red {
     color: #d34134ff;
+    background: -webkit-linear-gradient(#d34134, #76251d);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: none;
 }
 .faded {
     color: #08645dff;
