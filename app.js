@@ -425,9 +425,9 @@ const priceLookup = async (assetSymbol) => {
         return prices[assetSymbol].price;
     }
     let odexAddress;
-    if (assetSymbol.includes('BTC')) odexAddress = contracts.wbtcMarket;
-    if (assetSymbol.includes('ETH')) odexAddress = contracts.wethMarket;
-    if (assetSymbol.includes('ODEX')) odexAddress = contracts.odexMarket;
+    for (const market of markets) {
+        if (market.token.toLowerCase().includes(assetSymbol.toLowerCase())) odexAddress = market.address;
+    }
     if (odexAddress) {
         try {
             const contract = new ethers.Contract(odexAddress, odexMarketsAbi, provider);
