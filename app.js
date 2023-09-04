@@ -25,7 +25,6 @@ const contracts = {
     crv: '0x98094591d394dDb962fE85E2AD19139aECaf90CA',
     paxg: '0x17367dCFA5523999b341a4641c737265EAc41377',
     rpl: '0xfA7E26aD7028A98dfE6402637a9Bc6866c6A4ca0',
-    pepe: '0xcE57594a256095814aDe487605Ba25F9CAfE3eCF',
     comp: '0xBF29D9e26A0382306D06244160B2C681026f1f7A',
     gmx: '0xe4475122b0b87a06e93A23F3b15DF3D319682369',
     ens: '0x5626e5f6118BE4aFA61b8ffd0CD7fC4E0e49d6C1',
@@ -44,7 +43,6 @@ const contracts = {
     crvMarket: '0xE61F08cA061524368F069eF42cF4cA06a051c794',
     paxgMarket: '0x11D9C8E85Ae6Bd4636185bB2Ab7A6238aF2930cA',
     rplMarket: '0x34886f9Ab41276E83778f4D043FC138B711085DF',
-    pepeMarket: '0xB6B8640E61e43bf1b7F2a38c2635dC94D7D9E86D',
     compMarket: '0x9C7D6835085C3859937C1C66A8bFEa92d578d33F',
     gmxMarket: '0xCE8463ba6a0fa03cd2A00FFA9AC88db6C0dfA939',
     ensMarket: '0xDbB22B00E5aC7df4996c8341314A18c58359Ae48'
@@ -297,7 +295,6 @@ const initAccount = async () => {
         { token: 'CRV', baseAsset: 'USDC', tokenAddress: contracts.crv, baseAssetAddress: contracts.usd, marketId: 14, address: contracts.crvMarket, image: 'market-crvusdc.png', tokenDecimals: 18, baseAssetDecimals: 6 },
         { token: 'PAXG', baseAsset: 'USDC', tokenAddress: contracts.paxg, baseAssetAddress: contracts.usd, marketId: 15, address: contracts.paxgMarket, image: 'market-paxgusdc.png', tokenDecimals: 18, baseAssetDecimals: 6 },
         { token: 'RPL', baseAsset: 'USDC', tokenAddress: contracts.rpl, baseAssetAddress: contracts.usd, marketId: 16, address: contracts.rplMarket, image: 'market-rplusdc.png', tokenDecimals: 18, baseAssetDecimals: 6 },
-        { token: 'PEPE', baseAsset: 'USDC', tokenAddress: contracts.pepe, baseAssetAddress: contracts.usd, marketId: 17, address: contracts.pepeMarket, image: 'market-pepeusdc.png', tokenDecimals: 18, baseAssetDecimals: 6 },
         { token: 'COMP', baseAsset: 'USDC', tokenAddress: contracts.comp, baseAssetAddress: contracts.usd, marketId: 18, address: contracts.compMarket, image: 'market-compusdc.png', tokenDecimals: 18, baseAssetDecimals: 6 },
         { token: 'GMX', baseAsset: 'USDC', tokenAddress: contracts.gmx, baseAssetAddress: contracts.usd, marketId: 19, address: contracts.gmxMarket, image: 'market-gmxusdc.png', tokenDecimals: 18, baseAssetDecimals: 6 },
         { token: 'ENS', baseAsset: 'USDC', tokenAddress: contracts.ens, baseAssetAddress: contracts.usd, marketId: 20, address: contracts.ensMarket, image: 'market-ensusdc.png', tokenDecimals: 18, baseAssetDecimals: 6 },
@@ -649,27 +646,26 @@ const loadWallets = async () => {
     refreshWallets();
     setTimeout(() => {
         if (document.getElementById('wallet-name')) refreshWallets();
-    }, 60000);
+    },60000);
 }
 
 const additionalAssets = [
-    { symbol: 'DOGE', name: 'Dogecoin', address: contracts.doge, decimals: 18, image: 'asset-doge.png' }, 
-    { symbol: 'MATIC', name: 'Polygon Matic', address: contracts.matic, decimals: 18, image: 'asset-matic.png' }, 
-    { symbol: 'SHIB', name: 'Shiba Inu', address: contracts.shib, decimals: 18, image: 'asset-shib.png' }, 
-    { symbol: 'LINK', name: 'Chainlink', address: contracts.link, decimals: 18, image: 'asset-link.png' }, 
-    { symbol: 'UNI', name: 'Uniswap', address: contracts.uni, decimals: 18, image: 'asset-uni.png' }, 
-    { symbol: 'LDO', name: 'LIDO Finanace', address: contracts.ldo, decimals: 18, image: 'asset-ldo.png' }, 
-    { symbol: 'ARB', name: 'Arbitrum', address: contracts.arb, decimals: 18, image: 'asset-arb.png' }, 
-    { symbol: 'MKR', name: 'MakerDAO', address: contracts.mkr, decimals: 18, image: 'asset-mkr.png' }, 
-    { symbol: 'OP', name: 'Optimism', address: contracts.op, decimals: 18, image: 'asset-op.png' }, 
-    { symbol: 'AAVE', name: 'AAVE', address: contracts.aave, decimals: 18, image: 'asset-aave.png' }, 
-    { symbol: 'SNX', name: 'Synthetix', address: contracts.snx, decimals: 18, image: 'asset-snx.png' }, 
-    { symbol: 'CRV', name: 'Curve', address: contracts.crv, decimals: 18, image: 'asset-crv.png' }, 
-    { symbol: 'PAXG', name: 'PAX Gold', address: contracts.paxg, decimals: 18, image: 'asset-paxg.png' }, 
-    { symbol: 'RPL', name: 'RocketPool', address: contracts.rpl, decimals: 18, image: 'asset-rpl.png' }, 
-    { symbol: 'PEPE', name: 'PEPE', address: contracts.pepe, decimals: 18, image: 'asset-pepe.png' }, 
-    { symbol: 'COMP', name: 'Compound', address: contracts.comp, decimals: 18, image: 'asset-comp.png' }, 
-    { symbol: 'GMX', name: 'GMX', address: contracts.gmx, decimals: 18, image: 'asset-gmx.png' }, 
+    { symbol: 'DOGE', name: 'Dogecoin', address: contracts.doge, decimals: 18, image: 'asset-doge.png' },
+    { symbol: 'MATIC', name: 'Polygon Matic', address: contracts.matic, decimals: 18, image: 'asset-matic.png' },
+    { symbol: 'SHIB', name: 'Shiba Inu', address: contracts.shib, decimals: 18, image: 'asset-shib.png' },
+    { symbol: 'LINK', name: 'Chainlink', address: contracts.link, decimals: 18, image: 'asset-link.png' },
+    { symbol: 'UNI', name: 'Uniswap', address: contracts.uni, decimals: 18, image: 'asset-uni.png' },
+    { symbol: 'LDO', name: 'LIDO Finanace', address: contracts.ldo, decimals: 18, image: 'asset-ldo.png' },
+    { symbol: 'ARB', name: 'Arbitrum', address: contracts.arb, decimals: 18, image: 'asset-arb.png' },
+    { symbol: 'MKR', name: 'MakerDAO', address: contracts.mkr, decimals: 18, image: 'asset-mkr.png' },
+    { symbol: 'OP', name: 'Optimism', address: contracts.op, decimals: 18, image: 'asset-op.png' },
+    { symbol: 'AAVE', name: 'AAVE', address: contracts.aave, decimals: 18, image: 'asset-aave.png' },
+    { symbol: 'SNX', name: 'Synthetix', address: contracts.snx, decimals: 18, image: 'asset-snx.png' },
+    { symbol: 'CRV', name: 'Curve', address: contracts.crv, decimals: 18, image: 'asset-crv.png' },
+    { symbol: 'PAXG', name: 'PAX Gold', address: contracts.paxg, decimals: 18, image: 'asset-paxg.png' },
+    { symbol: 'RPL', name: 'RocketPool', address: contracts.rpl, decimals: 18, image: 'asset-rpl.png' },
+    { symbol: 'COMP', name: 'Compound', address: contracts.comp, decimals: 18, image: 'asset-comp.png' },
+    { symbol: 'GMX', name: 'GMX', address: contracts.gmx, decimals: 18, image: 'asset-gmx.png' },
     { symbol: 'ENS', name: 'Ethereum Name Service', address: contracts.ens, decimals: 18, image: 'asset-ens.png' },
 ];
 
@@ -800,7 +796,6 @@ const loadTrade = async () => {
         ['CRV','USD', 'COINBASE:CRVUSD'],
         ['PAXG','USD', 'COINBASE:PAXGUSD'],
         ['RPL','USD', 'COINBASE:RPLUSD'],
-        ['PEPE','USD', 'BINANCE:PEPEUSDT'],
         ['COMP','USD', 'COINBASE:COMPUSD'],
         ['GMX','USD', 'BINANCE:GMXUSDT'],
         ['ENS','USD', 'COINBASE:ENSUSD'],
@@ -866,7 +861,7 @@ const displayOrderBook = async () => {
     setTimeout(() => {
         if (document.getElementById('orderbook-link') && document.getElementById('orderbook-link').classList.contains('blue'))
             displayOrderBook();
-    }, refreshRate);
+    },refreshRate);
 }
 
 const displayOrders = async () => {
