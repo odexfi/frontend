@@ -740,7 +740,6 @@ const loadTrade = async () => {
         }
         const price = await priceLookup(market.token);
         let formattedPrice = formatUSD(price);
-        if (formattedPrice == '$0') formattedPrice = (parseFloat(price) / 1000000).toFixed(6);
         document.getElementById('trade-price').innerHTML = formattedPrice;
     }
     const topMarket = `<div id="trade-market"><div class="market-title">${market.token}/${market.baseAsset}</div> <img src="./images/${market.image || 'market-misc.png'}" class="trade-icon" /></div>`;
@@ -861,6 +860,9 @@ const displayOrderBook = async () => {
             await new Promise(r => setTimeout(r, 50));
         }
     }
+    const price = await priceLookup(market.token);
+    let formattedPrice = formatUSD(price);
+    document.getElementById('trade-price').innerHTML = formattedPrice;
     setTimeout(() => {
         if (document.getElementById('orderbook-link') && document.getElementById('orderbook-link').classList.contains('blue'))
             displayOrderBook();
