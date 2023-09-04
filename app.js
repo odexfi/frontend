@@ -3,16 +3,52 @@ import { ethers } from "https://cdnjs.cloudflare.com/ajax/libs/ethers/6.7.0/ethe
 let provider = new ethers.JsonRpcProvider('https://sepolia-rollup.arbitrum.io/rpc');
 
 const contracts = {
-    odex: '0x299FEB7AE7d993a333b7775b3b8a4bDf04531DfF',
-    odexFactory: '0x7cE20010Cf28582f015Bd94dbe2050C7dE2D6509',
-    wbtc: '0x806D0637Fbbfb4EB9efD5119B0895A5C7Cbc66e7',
-    weth: '0x7331d7864ad4d32F1EBE86E26Dcba90787503757',
-    usd: '0xe97A5e6C4670DD6fDeA0B5C3E304110eB0e599d9',
-    odexToken: '0xb553A8a4aB3Baf31210d75c1e7B496d90ab74Afa',
-    wbtcMarket: '0xBc9D59a6fc9c3B5dc953a9235E4a31bf72E75ea7',
-    wethMarket: '0x85Cd521cc0380153106D4d4EbcfB47F20894e81c',
-    odexMarket: '0x76bF2F4D9aAc71e5f216dfC0ba122d2Dd6128962'
-}
+    odex: '0x574D8E7F44b8D3aD08C203C023267727a99296F5',
+    odexFactory: '0x83c517445aa6464da53B34cb74210aC1c733aAAe',
+    weth: '0xBffF34654C083C36c2FE8E18dCD654457d4B96BB',
+    usd: '0x44a739916D41eC0226d98F83BE5364B69078DA41',
+    odexToken: '0xf41E82f6Cbc2E6CA7895De6F977c443c17117c0e',
+    wethMarket: '0xF58C7A5699b74Ebbbde9979A2F077e6Ee4fbfffa',
+    odexMarket: '0x7b8B0F672128054e322e8778eC2c8F9D5a6a5cFa',
+    wbtc: '0x341f979EDf6a3361C176B799ab9d9791322689e5',
+    doge: '0x56457386D2607d5f883f1df17bD458F5398019b0',
+    matic: '0x2c54DB5F0de1Ec0DC86502F09f009C877943Ea62',
+    shib: '0x33B524642010315d32DF71e4a62D7426875B46a4',
+    link: '0xDA0d7Db6Fc434A879F76296eb5eC98241a9Cb2Db',
+    uni: '0xa704E65284B34FAEaaC95eb04064E7e7774a20d0',
+    ldo: '0xaA1e2421CBB72Bbb525cb500Ee53267447D28dC1',
+    arb: '0xC96Ab05eE1317E9cF4FF9bff7929f55c4FC591f8',
+    mkr: '0x785dBC403dF04dFe3bAB4A3667Ad0c37B956D203',
+    op: '0xE156d73d3C5A271F34c2343c896dcb14Add1e10a',
+    aave: '0x233D064dd90477B7C86e22E5352Bdb5aceB835Dc',
+    snx: '0xD9588AD644f73Ba28e9305884efFb91cB82e1feB',
+    crv: '0x98094591d394dDb962fE85E2AD19139aECaf90CA',
+    paxg: '0x17367dCFA5523999b341a4641c737265EAc41377',
+    rpl: '0xfA7E26aD7028A98dfE6402637a9Bc6866c6A4ca0',
+    pepe: '0xcE57594a256095814aDe487605Ba25F9CAfE3eCF',
+    comp: '0xBF29D9e26A0382306D06244160B2C681026f1f7A',
+    gmx: '0xe4475122b0b87a06e93A23F3b15DF3D319682369',
+    ens: '0x5626e5f6118BE4aFA61b8ffd0CD7fC4E0e49d6C1',
+    wbtcMarket: '0xeC539A4625034C8747a130Ec0aA44a3BA76Dc42A',
+    dogeMarket: '0x747Ac273367E232500b2d630aEd49307052831dF',
+    maticMarket: '0x4EEf437ef7096658eaa69A9Bf668520320215278',
+    shibMarket: '0x1BDcD64495d08B92eF40DCDbe041b0C8ADa33c2E',
+    linkMarket: '0x19acc0E23c40587fDec29865857b9e1e03f0eBcc',
+    uniMarket: '0xa8519591305A2cDC43291FD9E27e261C47CB814F',
+    ldoMarket: '0xDB562e9E3064F62BcF428aFdeb7BAd0ca94E42b2',
+    arbMarket: '0xf0F1d40dD700aB251Cc1b4f48eC508616B7D0CD4',
+    mkrMarket: '0xa15f19e7A12D95BBfBb7eda47A29eB01507c3a5E',
+    opMarket: '0x3a6C8F7db3eCDd76e16546A5C1B799F1e03EE662',
+    aaveMarket: '0x46226d235ad82d692c39859f1a832EAaBFA21fDf',
+    snxMarket: '0xf119405e7B4DCcC84796f549b09C7f59Bc761431',
+    crvMarket: '0xE61F08cA061524368F069eF42cF4cA06a051c794',
+    paxgMarket: '0x11D9C8E85Ae6Bd4636185bB2Ab7A6238aF2930cA',
+    rplMarket: '0x34886f9Ab41276E83778f4D043FC138B711085DF',
+    pepeMarket: '0xB6B8640E61e43bf1b7F2a38c2635dC94D7D9E86D',
+    compMarket: '0x9C7D6835085C3859937C1C66A8bFEa92d578d33F',
+    gmxMarket: '0xCE8463ba6a0fa03cd2A00FFA9AC88db6C0dfA939',
+    ensMarket: '0xDbB22B00E5aC7df4996c8341314A18c58359Ae48'
+  }
 
 const api = 'https://api.odex.fi/v1/';
 
@@ -243,8 +279,27 @@ const initAccount = async () => {
     ];
     localStorage.setItem('assets', JSON.stringify(assets));
     const markets = [
-        { token: 'wBTC', baseAsset: 'USDC', tokenAddress: contracts.wbtc, baseAssetAddress: contracts.usd, marketId: 0, address: contracts.wbtcMarket, image: 'market-wbtcusdc.png', tokenDecimals: 18, baseAssetDecimals: 6 },
-        { token: 'wETH', baseAsset: 'USDC', tokenAddress: contracts.weth, baseAssetAddress: contracts.usd, marketId: 1, address: contracts.wethMarket, image: 'market-wethusdc.png', tokenDecimals: 18, baseAssetDecimals: 6 },
+        { token: 'wETH', baseAsset: 'USDC', tokenAddress: contracts.weth, baseAssetAddress: contracts.usd, marketId: 0, address: contracts.wethMarket, image: 'market-wethusdc.png', tokenDecimals: 18, baseAssetDecimals: 6 },
+        { token: 'ODEX', baseAsset: 'USDC', tokenAddress: contracts.odexToken, baseAssetAddress: contracts.usd, marketId: 1, address: contracts.wethMarket, image: 'market-odexusdc.png', tokenDecimals: 18, baseAssetDecimals: 6 },
+        { token: 'wBTC', baseAsset: 'USDC', tokenAddress: contracts.wbtc, baseAssetAddress: contracts.usd, marketId: 2, address: contracts.wbtcMarket, image: 'market-wbtcusdc.png', tokenDecimals: 18, baseAssetDecimals: 6 },
+        { token: 'DOGE', baseAsset: 'USDC', tokenAddress: contracts.doge, baseAssetAddress: contracts.usd, marketId: 3, address: contracts.wethMarket, image: 'market-dogeusdc.png', tokenDecimals: 18, baseAssetDecimals: 6 },
+        { token: 'MATIC', baseAsset: 'USDC', tokenAddress: contracts.matic, baseAssetAddress: contracts.usd, marketId: 4, address: contracts.wethMarket, image: 'market-maticusdc.png', tokenDecimals: 18, baseAssetDecimals: 6 },
+        { token: 'SHIB', baseAsset: 'USDC', tokenAddress: contracts.shib, baseAssetAddress: contracts.usd, marketId: 5, address: contracts.wethMarket, image: 'market-shibusdc.png', tokenDecimals: 18, baseAssetDecimals: 6 },
+        { token: 'LINK', baseAsset: 'USDC', tokenAddress: contracts.link, baseAssetAddress: contracts.usd, marketId: 6, address: contracts.wethMarket, image: 'market-linkusdc.png', tokenDecimals: 18, baseAssetDecimals: 6 },
+        { token: 'UNI', baseAsset: 'USDC', tokenAddress: contracts.uni, baseAssetAddress: contracts.usd, marketId: 7, address: contracts.wethMarket, image: 'market-uniusdc.png', tokenDecimals: 18, baseAssetDecimals: 6 },
+        { token: 'LDO', baseAsset: 'USDC', tokenAddress: contracts.ldo, baseAssetAddress: contracts.usd, marketId: 8, address: contracts.wethMarket, image: 'market-ldousdc.png', tokenDecimals: 18, baseAssetDecimals: 6 },
+        { token: 'ARB', baseAsset: 'USDC', tokenAddress: contracts.arb, baseAssetAddress: contracts.usd, marketId: 9, address: contracts.wethMarket, image: 'market-arbusdc.png', tokenDecimals: 18, baseAssetDecimals: 6 },
+        { token: 'MKR', baseAsset: 'USDC', tokenAddress: contracts.mkr, baseAssetAddress: contracts.usd, marketId: 10, address: contracts.wethMarket, image: 'market-mkrusdc.png', tokenDecimals: 18, baseAssetDecimals: 6 },
+        { token: 'OP', baseAsset: 'USDC', tokenAddress: contracts.op, baseAssetAddress: contracts.usd, marketId: 11, address: contracts.wethMarket, image: 'market-opusdc.png', tokenDecimals: 18, baseAssetDecimals: 6 },
+        { token: 'AAVE', baseAsset: 'USDC', tokenAddress: contracts.aave, baseAssetAddress: contracts.usd, marketId: 12, address: contracts.wethMarket, image: 'market-aaveusdc.png', tokenDecimals: 18, baseAssetDecimals: 6 },
+        { token: 'SNX', baseAsset: 'USDC', tokenAddress: contracts.snx, baseAssetAddress: contracts.usd, marketId: 13, address: contracts.wethMarket, image: 'market-snxusdc.png', tokenDecimals: 18, baseAssetDecimals: 6 },
+        { token: 'CRV', baseAsset: 'USDC', tokenAddress: contracts.crv, baseAssetAddress: contracts.usd, marketId: 14, address: contracts.wethMarket, image: 'market-crvusdc.png', tokenDecimals: 18, baseAssetDecimals: 6 },
+        { token: 'PAXG', baseAsset: 'USDC', tokenAddress: contracts.paxg, baseAssetAddress: contracts.usd, marketId: 15, address: contracts.wethMarket, image: 'market-paxgusdc.png', tokenDecimals: 18, baseAssetDecimals: 6 },
+        { token: 'RPL', baseAsset: 'USDC', tokenAddress: contracts.rpl, baseAssetAddress: contracts.usd, marketId: 16, address: contracts.wethMarket, image: 'market-rplusdc.png', tokenDecimals: 18, baseAssetDecimals: 6 },
+        { token: 'PEPE', baseAsset: 'USDC', tokenAddress: contracts.pepe, baseAssetAddress: contracts.usd, marketId: 17, address: contracts.wethMarket, image: 'market-pepeusdc.png', tokenDecimals: 18, baseAssetDecimals: 6 },
+        { token: 'COMP', baseAsset: 'USDC', tokenAddress: contracts.comp, baseAssetAddress: contracts.usd, marketId: 18, address: contracts.wethMarket, image: 'market-compusdc.png', tokenDecimals: 18, baseAssetDecimals: 6 },
+        { token: 'GMX', baseAsset: 'USDC', tokenAddress: contracts.gmx, baseAssetAddress: contracts.usd, marketId: 19, address: contracts.wethMarket, image: 'market-gmxusdc.png', tokenDecimals: 18, baseAssetDecimals: 6 },
+        { token: 'ENS', baseAsset: 'USDC', tokenAddress: contracts.ens, baseAssetAddress: contracts.usd, marketId: 20, address: contracts.wethMarket, image: 'market-ensusdc.png', tokenDecimals: 18, baseAssetDecimals: 6 },
     ];
     localStorage.setItem('markets', JSON.stringify(markets));
     localStorage.setItem('lastMarket', 1);
@@ -573,7 +628,7 @@ const loadWallets = async () => {
     });
     document.getElementById('top-right').innerHTML = socials;
     document.getElementById('connect-wallet-link').onclick = () => connectWallet();
-    document.getElementById('import-tokens').onclick = () => alert('Coming Soon');
+    document.getElementById('import-tokens').onclick = () => importTokens();
     document.getElementById('link-add-wallet').onclick = addWallet;
     document.getElementById('link-rename').onclick = renameWallet;
     document.getElementById('button-backup').onclick = backupWallet;
@@ -593,6 +648,69 @@ const loadWallets = async () => {
     setTimeout(() => {
         if (document.getElementById('wallet-name')) refreshWallets();
     }, 60000);
+}
+
+const additionalAssets = [
+    { symbol: 'DOGE', name: 'Dogecoin', address: contracts.doge, decimals: 18, image: 'asset-doge.png' }, 
+    { symbol: 'MATIC', name: 'Polygon Matic', address: contracts.matic, decimals: 18, image: 'asset-matic.png' }, 
+    { symbol: 'SHIB', name: 'Shiba Inu', address: contracts.shib, decimals: 18, image: 'asset-shib.png' }, 
+    { symbol: 'LINK', name: 'Chainlink', address: contracts.link, decimals: 18, image: 'asset-link.png' }, 
+    { symbol: 'UNI', name: 'Uniswap', address: contracts.uni, decimals: 18, image: 'asset-uni.png' }, 
+    { symbol: 'LDO', name: 'LIDO Finanace', address: contracts.ldo, decimals: 18, image: 'asset-ldo.png' }, 
+    { symbol: 'ARB', name: 'Arbitrum', address: contracts.arb, decimals: 18, image: 'asset-arb.png' }, 
+    { symbol: 'MKR', name: 'MakerDAO', address: contracts.mkr, decimals: 18, image: 'asset-mkr.png' }, 
+    { symbol: 'OP', name: 'Optimism', address: contracts.op, decimals: 18, image: 'asset-op.png' }, 
+    { symbol: 'AAVE', name: 'AAVE', address: contracts.aave, decimals: 18, image: 'asset-aave.png' }, 
+    { symbol: 'SNX', name: 'Synthetix', address: contracts.snx, decimals: 18, image: 'asset-snx.png' }, 
+    { symbol: 'CRV', name: 'Curve', address: contracts.crv, decimals: 18, image: 'asset-crv.png' }, 
+    { symbol: 'PAXG', name: 'PAX Gold', address: contracts.paxg, decimals: 18, image: 'asset-paxg.png' }, 
+    { symbol: 'RPL', name: 'RocketPool', address: contracts.rpl, decimals: 18, image: 'asset-rpl.png' }, 
+    { symbol: 'PEPE', name: 'PEPE', address: contracts.pepe, decimals: 18, image: 'asset-pepe.png' }, 
+    { symbol: 'COMP', name: 'Compound', address: contracts.comp, decimals: 18, image: 'asset-comp.png' }, 
+    { symbol: 'GMX', name: 'GMX', address: contracts.gmx, decimals: 18, image: 'asset-gmx.png' }, 
+    { symbol: 'ENS', name: 'Ethereum Name Service', address: contracts.ens, decimals: 18, image: 'asset-ens.png' },
+];
+
+const importTokens = async () => {
+    document.getElementById('import-new-token').style.display = 'flex';
+    document.getElementById('add-custom-token').onclick = async () => {
+        const tokenAddress = document.getElementById('custom-token-address').value;
+        await addToken(tokenAddress);
+        document.getElementById('import-new-token').style.display = 'none';
+    }
+    document.getElementById('cancel-new-token').onclick = () => {
+        document.getElementById('import-new-token').style.display = 'none';
+    }
+
+    let aHTML;
+    for (const asset of additionalAssets ) {
+        aHTML += `<tr><td><img src="./images/${asset.image}" /></td><td>${symbol}</td><td><button class="add-additional-token" data-address="${asset.address}">ADD</button>`;
+    }
+    document.getElementById('additional-tokens').innerHTML = aHTML;
+    document.querySelectorAll('.add-additional-token').forEach(a => a.addEventListener('click', async (e) => {
+        e.target.innerHTML = '...';
+        const tokenAddress = e.target.getAttribute("data-address");
+        await addToken(tokenAddress);
+        document.getElementById('import-new-token').style.display = 'none';
+    }));
+}
+
+const addToken = async (address) => {
+    let newAsset = false;
+    for (const asset of additionalAssets ) {
+        if(address.toLowerCase() == asset.address.toLowerCase()) newAsset = asset;
+    }
+    if (!newAsset) {
+        const token = new ethers.Contract(address, erc20Abi, provider);
+        const symbol = await token.symbol();
+        const name = await token.name();
+        const decimals = await token.decimals();
+        const image = 'asset-misc.png';
+        newAsset = { symbol, name, address, decimals, image };
+    }
+    const assets = JSON.parse(localStorage.assets);
+    assets.push(newAsset);
+    localStorage.setItem('assets', JSON.stringify(assets));
 }
 
 const loadTrade = async () => {
@@ -665,6 +783,24 @@ const loadTrade = async () => {
     const knownMarkets = [
         ['BTC','USD', 'COINBASE:BTCUSD'],
         ['ETH','USD', 'COINBASE:ETHUSD'],
+        ['DOGE','USD', 'COINBASE:DOGEUSD'],
+        ['MATIC','USD', 'COINBASE:MATICUSD'],
+        ['SHIB','USD', 'COINBASE:SHIBUSD'],
+        ['LINK','USD', 'COINBASE:LINKUSD'],
+        ['UNI','USD', 'COINBASE:UNIUSD'],
+        ['LDO','USD', 'COINBASE:LDOUSD'],
+        ['ARB','USD', 'COINBASE:ARBUSD'],
+        ['MKR','USD', 'COINBASE:MKRUSD'],
+        ['OP','USD', 'COINBASE:OPUSD'],
+        ['AAVE','USD', 'COINBASE:AAVEUSD'],
+        ['SNX','USD', 'COINBASE:SNXUSD'],
+        ['CRV','USD', 'COINBASE:CRVUSD'],
+        ['PAXG','USD', 'COINBASE:PAXGUSD'],
+        ['RPL','USD', 'COINBASE:RPLUSD'],
+        ['PEPE','USD', 'BINANCE:PEPEUSDT'],
+        ['COMP','USD', 'COINBASE:COMPUSD'],
+        ['GMX','USD', 'BINANCE:GMXUSDT'],
+        ['ENS','USD', 'COINBASE:ENSUSD'],
     ];
     for (const km of knownMarkets)
         if (market.token.includes(km[0]) && market.baseAsset.includes(km[1])) tradingViewRef = km[2];
