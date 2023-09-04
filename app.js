@@ -564,8 +564,7 @@ const refreshWallets = async () => {
             let assetImage = `<img class="asset-icon" src="./images/asset-misc.png" />`;
             if (asset.image) assetImage = `<img class="asset-icon" src="./images/${asset.image}" />`;
             const price = await priceLookup(asset.symbol);
-            const divPrice = BigInt(price) / 1000000n;
-            const formattedPrice =  formatUSD(divPrice);
+            const formattedPrice =  formatUSD(price);
             let qty = 0;
             try {
                 const contract = new ethers.Contract(asset.address, erc20Abi, provider);
