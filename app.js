@@ -680,10 +680,11 @@ const importTokens = async () => {
         document.getElementById('import-new-token').style.display = 'none';
     }
 
-    let aHTML;
+    let aHTML = '<table>';
     for (const asset of additionalAssets ) {
         aHTML += `<tr><td><img src="./images/${asset.image}" /></td><td>${asset.symbol}</td><td><button class="add-additional-token" data-address="${asset.address}">ADD</button>`;
     }
+    aHTML += '<table>';
     document.getElementById('additional-tokens').innerHTML = aHTML;
     document.querySelectorAll('.add-additional-token').forEach(a => a.addEventListener('click', async (e) => {
         e.target.innerHTML = '...';
