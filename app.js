@@ -1157,6 +1157,7 @@ const confirmOrder = async () => {
     }
     document.getElementById('confirmation').style.display = 'flex';
     document.getElementById('confirmation-text').innerHTML = txConfirmation;
+    document.getElementById('confirmation-market').innerHTML = `<img src="./images/${order.image || 'market-misc.png'}" class="confirmation-icon" />`
     document.getElementById('confirmation-explorer').innerHTML = `<a href="https://sepolia-explorer.arbitrum.io/tx/${tx.hash}" target="_blank">${tx.hash}</a>`;
     document.getElementById('confirmation-continue').onclick = () => {
         document.getElementById('confirmation').style.display = 'none';

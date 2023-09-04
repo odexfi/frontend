@@ -505,6 +505,16 @@ input[type="range"]::-webkit-slider-thumb {
     background-color: rgb(31, 47, 50);
 }
 
+#confirmation-explorer {
+    font-size: 8px;
+    overflow: hidden;
+    max-width: 300px;
+}
+
+.confirmation-icon {
+    height: 60px;
+}
+
 /* index */
 
 .index-section {
