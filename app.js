@@ -97,7 +97,7 @@ const loadMarkets = async () => {
             const price = await priceLookup(market.token);
             const divPrice = BigInt(price) / 1000000n;
             let formattedPrice = formatUSD(divPrice);
-            if (formattedPrice == '$0') formattedPrice = `$${(parseFloat(formattedPrice) / 1000000).toFixed(6)}`;
+            if (formattedPrice == '$0') formattedPrice = (parseFloat(price) / 1000000).toFixed(6);
             const buttons = `<button class="button-close red-bkg remove-market" data-market="${index}">X</button> <button class="button-small trade-button" data-market="${index}">TRADE</button>`;
             mHTML += responseText
             .replace('<!-- market-image -->', marketImage)
@@ -740,7 +740,8 @@ const loadTrade = async () => {
         }
         const price = await priceLookup(market.token);
         const divPrice = BigInt(price) / 1000000n;
-        const formattedPrice = formatUSD(divPrice);
+        let formattedPrice = formatUSD(divPrice);
+        if (formattedPrice == '$0') formattedPrice = (parseFloat(price) / 1000000).toFixed(6);
         document.getElementById('trade-price').innerHTML = formattedPrice;
     }
     const topMarket = `<div id="trade-market"><div class="market-title">${market.token}/${market.baseAsset}</div> <img src="./images/${market.image || 'market-misc.png'}" class="trade-icon" /></div>`;
