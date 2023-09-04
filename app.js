@@ -1124,16 +1124,44 @@ const confirmOrder = async () => {
     const virtualWallet = await loadWallet();
     const odexMarket = new ethers.Contract(order.address, odexMarketsAbi, virtualWallet);
     order.priceString = ethers.parseUnits(document.getElementById('price-confirm').innerHTML, order.baseAssetDecimals);
+    const txConfirmations = [
+        `Thank you for using a decentralized exchange, don't go back to trusting humans with your digital assets`,
+        `Your order is confirmed, congratulations on trading via a permissionless smart contracts`,
+        `Trade executed! Decentralization is the new black, keep it that way`,
+        `Swap completed! A high five from us for being part of the decentralized revolution`,
+        `Congratulations, transaction verified. Yet another victory for you and dex trading`,
+        `Your digital asset exchange has successfully completed. Enjoy the freedom and safety of decentralization`,
+        `Your transaction is confirmed! In the world of crypto, you are your own bank`,
+        `Cheers to a successful transaction! You are shaping the future of finance with us`,
+        `Your trade is complete. You are winning at life and decentralized trading`,
+        `Exchange completed with no middlemen, no asset custodians, just seamless trading`,
+        `Your transaction was successful. Thank you for using a safe, secure and decentralized exchange`,
+        `Congratulations! Your transaction is verified and you are living in the future of decentralized trading`,
+        `Your p2p transaction was successful. Enjoy your new found financial freedom and decentralized trading`,
+        `Another successful trade. Congratulations, decentralization looks good on you`,
+        `You have successfully navigated decentralized waters yet again. Trade away, Captain`,
+        `Trade confirmed! Keep changing the world, one blockchain transaction at a time`,
+        `Your trade was a success! The route to decentralization is clear and you are on the right path`,
+        `Your transaction is confirmed and will be perpetually stored for your grandchildren to see on-chain`,
+        `Congrats, your tx is confirmed! Friends don't let friend trade on centralized exchanges`,
+        `Kudos! You're transaction is complete and is another step towards a decentralized world`,
+    ];
+    const txConfirmation = txConfirmations[Math.floor(Math.random() * txConfirmations.length)];
+    let tx;
     if (order.type == 'BUY') {  
-        const tx1 = await odexMarket.limitOrderBuy(order.amountString, order.priceString);
-        await tx1.wait();
-        prompt('BUY Confirmed! TX Hash:', tx1.hash);
+        tx = await odexMarket.limitOrderBuy(order.amountString, order.priceString);
+        await tx.wait();
     } else if (order.type == 'SELL') {
-        const tx2 = await odexMarket.limitOrderSell(order.amountString, order.priceString);
-        await  tx2.wait();
-        prompt('SELL Confirmed! TX Hash:', tx2.hash);
+        tx = await odexMarket.limitOrderSell(order.amountString, order.priceString);
+        await  tx.wait();
     }
-    loadTrade();
+    document.getElementById('confirmation').style.display = 'flex';
+    document.getElementById('confirmation-text').innerHTML = txConfirmation;
+    document.getElementById('confirmation-explorer').innerHTML = `<a href="https://sepolia-explorer.arbitrum.io/tx/${tx.hash}" target="_blank">${tx.hash}</a>`;
+    document.getElementById('confirmation-continue').onclick = () => {
+        document.getElementById('confirmation').style.display = 'none';
+        loadTrade();
+    }
 }
 
 const loadOrder = async () => {
