@@ -139,7 +139,8 @@ const listMarkets = async (tokenFilter=false) => {
     const contract = new ethers.Contract(contracts.odex, odexAbi, provider);
     const odexCount = await contract.odexCount();
     const assets = JSON.parse(localStorage.assets);
-    let oHTML = `<table class="market-table"><tbody><tr class="orange"><td>Token</td><td>Base Asset</td><td>Volume</td><td>Actions</td></tr>`;
+    let oHTML = `<table id="market-table"><tbody><tr class="orange"><td>Token</td><td>Base Asset</td><td>Volume</td><td>Actions</td></tr>`;
+    document.getElementById('markets-container').innerHTML = `<h2>Latest Markets</h2>${oHTML}</tbody></table>`;
     for (let i = odexCount - 1n; i >= 0n; i--) {
         const oi = await contract.odexs(i);
         if (tokenFilter && oi[2] !== tokenFilter) continue;
@@ -153,6 +154,7 @@ const listMarkets = async (tokenFilter=false) => {
         const baseAssetLink = `<span class="green">${baseAssetSymbol}</span> <a href="https://goerli.etherscan.io/token/${oi[3]}" target="_blank">${oi[3].substr(0,8)}</a>`;
         const tokenLink = `<span class="green">${tokenSymbol}</span> <a href="https://goerli.etherscan.io/token/${oi[2]}" target="_blank">${oi[2].substr(0,8)}</a>`;
         oHTML += `<tr><td>${tokenLink}</td><td>${baseAssetLink}</td><td>${volume}</td><td><button class="button-small add-market" data-odex-index="${i}">ADD</button></td></tr>`;
+        if (!document.getElementById('market-table')) return;
         document.getElementById('markets-container').innerHTML = `<h2>Latest Markets</h2>${oHTML}</tbody></table>`;
         document.querySelectorAll('.add-market').forEach(a => a.addEventListener('click', e => {
             const marketId = e.target.getAttribute("data-odex-index");
