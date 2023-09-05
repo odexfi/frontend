@@ -345,9 +345,10 @@ const welcomeScreen = () => {
     document.getElementById('button-welcome-continue').onclick = () => {
         document.getElementById('welcome').style.display = 'none';
         loadWallets();
-        setTimeout(() => { if (document.getElementById('wallet-name')) refreshWallets(); },10000);
-        setTimeout(() => { if (document.getElementById('wallet-name')) refreshWallets(); },20000);
-        setTimeout(() => { if (document.getElementById('wallet-name')) refreshWallets(); },40000);
+        setTimeout(() => { if (document.getElementById('wallet-name')) refreshWallets(); },3000);
+        setTimeout(() => { if (document.getElementById('wallet-name')) refreshWallets(); },6000);
+        setTimeout(() => { if (document.getElementById('wallet-name')) refreshWallets(); },12000);
+        setTimeout(() => { if (document.getElementById('wallet-name')) refreshWallets(); },24000);
     }
 }
 
