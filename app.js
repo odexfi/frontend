@@ -1177,12 +1177,29 @@ const confirmOrder = async () => {
             await  tx.wait();
         }
         document.getElementById('confirmation').style.display = 'flex';
-        document.getElementById('confirmation-text').innerHTML = txConfirmation;
+        document.getElementById('confirmation-text').innerHTML = `"${txConfirmation}"`;
         document.getElementById('confirmation-market').innerHTML = `<img src="./images/${order.image || 'market-misc.png'}" class="confirmation-icon" />`
         document.getElementById('confirmation-explorer').innerHTML = `<a href="https://sepolia-explorer.arbitrum.io/tx/${tx.hash}" target="_blank">${tx.hash}</a>`;
         document.getElementById('confirmation-continue').onclick = () => {
             document.getElementById('confirmation').style.display = 'none';
             loadTrade();
+        }
+        document.getElementById('confirmation-share').onclick = () => {
+            const tweets = [
+                `Another successful order on a permissionless, open, decentralized exchange`,
+                `Executing seamless trades on my favorite DEX! Who needs middlemen anyway?`,
+                `My funds are SAFU because I trade on a decentralized exchange, you should too`,
+                `I control my own keys and assets on ODEX! Are you in control of yours?`,
+                `Completed the order faster than you can say "CEX's are a thing of the past"`,
+                `Because I prefer trustless, non-custodial exchanges and you should too`,
+                `Friends don't let friends get rugged by centralized exchanges`,
+                `There is no such thing as safe CEX, use protection, use a DEX`,
+                `Relishing the DEX revolution and I didn't even spill my coffee`,
+                `Swapping coins on ODEX like a squirrel hoarding nuts for winter`,
+            ];
+            const twit = tweets[Math.floor(Math.random() * tweets.length)];
+            const tweetURL = `https://twitter.com/intent/tweet?text=I%20just%20traded%20%24${order.token}%20%2F%20%24${order.baseAsset}%20on%20%40ODEXfi%0A%0A${encodeURIComponent(twit)}&url=https%3A%2F%2Fodex.fi`;
+            window.open(tweetURL);
         }
     } catch(e) {
         console.log(e);
