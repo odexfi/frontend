@@ -368,7 +368,7 @@ const connectWallet = async () => {
     provider = new ethers.BrowserProvider(window.ethereum)
     const signer = await provider.getSigner();
     const network = await provider.getNetwork();
-    if (network.chainId !== 421613n) alert('Please set your network to Arbitrum Goerli Testnet or visit chainlist.org');
+    if (network.chainId !== 421614n) alert('Please set your network to Arbitrum Sepolia Testnet or visit chainlist.org');
     const wallets = JSON.parse(localStorage.wallets);
     window.ethereum.on('accountsChanged', () => { connectWallet() });
     window.ethereum.on('network', () => { connectWallet() });
