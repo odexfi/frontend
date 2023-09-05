@@ -723,27 +723,28 @@ const loadTrade = async () => {
     document.querySelector('.load-wallets .footer-icon').setAttribute("src", './images/icon-wallets.png');
     document.querySelector('.load-trade .footer-icon').setAttribute("src", './images/icon-trade-selected.png');
     if (!localStorage.lastMarket) localStorage.setItem('lastMarket', 1);
-    await fetch('./trade.html').then(response => response.text()).then((responseText) => {
-        document.getElementById('content').innerHTML = responseText;
-    });
-    const priceLiquidity = document.getElementById('price-liquidity').getBoundingClientRect();
-    const headerContainer = document.getElementById('header-container').getBoundingClientRect();
-    if (priceLiquidity.top < headerContainer.bottom) {
-        document.getElementById('price-liquidity').style.display = 'none';
-    } else {
-        try {
-            const contract = new ethers.Contract(market.address, odexMarketsAbi, provider);
-            const tvl = await contract.tvl();
-            const formattedTVL = formatUSD(BigInt(tvl));
-            document.getElementById('trade-liquidity').innerHTML = formattedTVL;
-        } catch (e) {
-            console.log('app.js e413 tvl failed');
-        }
-        const price = await priceLookup(market.token);
-        let formattedPrice = formatUSD(price);
-        document.getElementById('trade-price').innerHTML = formattedPrice;
+    const q = await fetch('./trade.html');
+    const responseText = await q.text();
+    document.getElementById('content').innerHTML = responseText;
+    try {
+        const contract = new ethers.Contract(market.address, odexMarketsAbi, provider);
+        const tvl = await contract.tvl();
+        const formattedTVL = formatUSD(BigInt(tvl));
+        document.getElementById('trade-liquidity').innerHTML = formattedTVL;
+    } catch (e) {
+        console.log('app.js e413 tvl failed');
     }
-    const topMarket = `<div id="trade-market"><div class="market-title">${market.token}/${market.baseAsset}</div> <img src="./images/${market.image || 'market-misc.png'}" class="trade-icon" /></div>`;
+    const price = await priceLookup(market.token);
+    let formattedPrice = formatUSD(price);
+    document.getElementById('trade-price').innerHTML = formattedPrice;
+    setTimeout(() => {
+        const headerContainer = document.getElementById('header-container').getBoundingClientRect();
+        document.querySelectorAll('.price-liquidity-item').forEach(e => {
+            const plc = e.getBoundingClientRect();
+            if (plc.top < headerContainer.bottom) e.style.display = 'none';
+        });
+    }, 1000);
+    const topMarket = `<div id="trade-market" class="flex-row flex-end"><div class="market-title">${market.token}/${market.baseAsset}</div> <img src="./images/${market.image || 'market-misc.png'}" class="trade-icon" /></div>`;
     document.getElementById('top-right').innerHTML = topMarket;
     document.getElementById('trade-market').onclick = loadMarkets;
     const baseAssetBalance = await balanceLookup(market.baseAsset);
@@ -1068,20 +1069,36 @@ const updatePrice = async () => {
     document.getElementById('price-confirm').innerHTML = ethers.formatUnits(order.price, order.baseAssetDecimals);
     let fill = `<span class="orange">0%</span>`;
     if (order.type == 'BUY') {
-        if (priceRange.value < 2) fill = `<span class="red">0%</span>`;
-        if (priceRange.value > 5) fill = `<span class="green">100%</span>`;
-        document.getElementById('amount-in').innerHTML = `${order.amount.substr(0,12)}<span class="text-small"> ${order.baseAsset}</span>`;
         const amountOut = ethers.parseUnits(order.amount.toString(), order.baseAssetDecimals) * ethers.parseUnits('1',order.tokenDecimals) / order.price;
+        if (priceRange.value < 2) fill = `<span class="red">0%</span>`;
+        if (priceRange.value > 5) {
+            let fillPercentage = 100;
+            if (priceRange.value == 5) fillPercentage = (ob.groupedAsks[0][0] * 100n / amountOut);
+            if (priceRange.value == 6) fillPercentage = ((ob.groupedAsks[0][0] + ob.groupedAsks[1][0]) * 100n / amountOut);
+            if (priceRange.value == 7) fillPercentage = ((ob.groupedAsks[0][0] + ob.groupedAsks[1][0] + ob.groupedAsks[2][0]) * 100n / amountOut);
+            if (priceRange.value == 8) fillPercentage = ((ob.groupedAsks[0][0] + ob.groupedAsks[1][0] + ob.groupedAsks[2][0] + ob.groupedAsks[3][0]) * 100n / amountOut);
+            if (priceRange.value == 9) fillPercentage = ((ob.groupedAsks[0][0] + ob.groupedAsks[1][0] + ob.groupedAsks[2][0] + ob.groupedAsks[3][0] + ob.groupedAsks[4][0]) * 100n / amountOut);
+            fill = `<span class="green">${Math.min(100,parseInt(fillPercentage))}%</span>`;
+        }
+        document.getElementById('amount-in').innerHTML = `${order.amount.substr(0,12)}<span class="text-small"> ${order.baseAsset}</span>`;
         let afterFees = amountOut;
         if (priceRange.value > 5) afterFees = afterFees * 999n / 1000n;
         document.getElementById('amount-out').innerHTML = `${ethers.formatUnits(amountOut, order.tokenDecimals).toString().substr(0,12)}<span class="text-small"> ${order.token}</span>`;
         document.getElementById('after-fees').innerHTML = `${ethers.formatUnits(afterFees, order.tokenDecimals).toString().substr(0,12)}`;
         order.amountString = ethers.parseUnits(order.amount, order.baseAssetDecimals).toString();
     } else if (order.type == 'SELL') {
-        if (priceRange.value > 9) fill = `<span class="red">0%</span>`;
-        if (priceRange.value < 6) fill = `<span class="green">100%</span>`;
-        document.getElementById('amount-in').innerHTML = `${order.amount.substr(0,12)}<span class="text-small"> ${order.token}</span>`;
         const amountOut = ethers.parseUnits(order.amount.toString(), order.tokenDecimals) * order.price / ethers.parseUnits('1',order.tokenDecimals);
+        if (priceRange.value > 9) fill = `<span class="red">0%</span>`;
+        if (priceRange.value < 6) {
+            let fillPercentage = 100;
+            if (priceRange.value == 5) fillPercentage = (ob.groupedBids[0][0] * 100n / amountOut);
+            if (priceRange.value == 6) fillPercentage = ((ob.groupedBids[0][0] + ob.groupedBids[1][0]) * 100n / amountOut);
+            if (priceRange.value == 7) fillPercentage = ((ob.groupedBids[0][0] + ob.groupedBids[1][0] + ob.groupedBids[2][0]) * 100n / amountOut);
+            if (priceRange.value == 8) fillPercentage = ((ob.groupedBids[0][0] + ob.groupedBids[1][0] + ob.groupedBids[2][0] + ob.groupedBids[3][0]) * 100n / amountOut);
+            if (priceRange.value == 9) fillPercentage = ((ob.groupedBids[0][0] + ob.groupedBids[1][0] + ob.groupedBids[2][0] + ob.groupedBids[3][0] + ob.groupedBids[4][0]) * 100n / amountOut);
+            fill = `<span class="green">${Math.min(100,parseInt(fillPercentage))}%</span>`;
+        }
+        document.getElementById('amount-in').innerHTML = `${order.amount.substr(0,12)}<span class="text-small"> ${order.token}</span>`;
         let afterFees = amountOut;
         if (priceRange.value > 5) afterFees = afterFees * 999n / 1000n;
         document.getElementById('amount-out').innerHTML = `${ethers.formatUnits(amountOut, order.baseAssetDecimals).toString().substr(0,12)}<span class="text-small"> ${order.baseAsset}</span>`;
@@ -1148,19 +1165,25 @@ const confirmOrder = async () => {
     ];
     const txConfirmation = txConfirmations[Math.floor(Math.random() * txConfirmations.length)];
     let tx;
-    if (order.type == 'BUY') {  
-        tx = await odexMarket.limitOrderBuy(order.amountString, order.priceString);
-        await tx.wait();
-    } else if (order.type == 'SELL') {
-        tx = await odexMarket.limitOrderSell(order.amountString, order.priceString);
-        await  tx.wait();
-    }
-    document.getElementById('confirmation').style.display = 'flex';
-    document.getElementById('confirmation-text').innerHTML = txConfirmation;
-    document.getElementById('confirmation-market').innerHTML = `<img src="./images/${order.image || 'market-misc.png'}" class="confirmation-icon" />`
-    document.getElementById('confirmation-explorer').innerHTML = `<a href="https://sepolia-explorer.arbitrum.io/tx/${tx.hash}" target="_blank">${tx.hash}</a>`;
-    document.getElementById('confirmation-continue').onclick = () => {
-        document.getElementById('confirmation').style.display = 'none';
+    try {
+        if (order.type == 'BUY') {  
+            tx = await odexMarket.limitOrderBuy(order.amountString, order.priceString);
+            await tx.wait();
+        } else if (order.type == 'SELL') {
+            tx = await odexMarket.limitOrderSell(order.amountString, order.priceString);
+            await  tx.wait();
+        }
+        document.getElementById('confirmation').style.display = 'flex';
+        document.getElementById('confirmation-text').innerHTML = txConfirmation;
+        document.getElementById('confirmation-market').innerHTML = `<img src="./images/${order.image || 'market-misc.png'}" class="confirmation-icon" />`
+        document.getElementById('confirmation-explorer').innerHTML = `<a href="https://sepolia-explorer.arbitrum.io/tx/${tx.hash}" target="_blank">${tx.hash}</a>`;
+        document.getElementById('confirmation-continue').onclick = () => {
+            document.getElementById('confirmation').style.display = 'none';
+            loadTrade();
+        }
+    } catch(e) {
+        console.log(e);
+        if (e.reason) alert(`TX Failed: ${e.reason}`);
         loadTrade();
     }
 }
