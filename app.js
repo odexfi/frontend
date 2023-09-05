@@ -316,6 +316,27 @@ const initAccount = async () => {
     });
 }
 
+const additionalAssets = [
+    { symbol: 'ODEX', name: 'ODEX Finance', address: contracts.odexToken, decimals: 18, image: 'asset-odex.png' },
+    { symbol: 'DOGE', name: 'Dogecoin', address: contracts.doge, decimals: 18, image: 'asset-doge.png' },
+    { symbol: 'MATIC', name: 'Polygon Matic', address: contracts.matic, decimals: 18, image: 'asset-matic.png' },
+    { symbol: 'SHIB', name: 'Shiba Inu', address: contracts.shib, decimals: 18, image: 'asset-shib.png' },
+    { symbol: 'LINK', name: 'Chainlink', address: contracts.link, decimals: 18, image: 'asset-link.png' },
+    { symbol: 'UNI', name: 'Uniswap', address: contracts.uni, decimals: 18, image: 'asset-uni.png' },
+    { symbol: 'LDO', name: 'LIDO Finanace', address: contracts.ldo, decimals: 18, image: 'asset-ldo.png' },
+    { symbol: 'ARB', name: 'Arbitrum', address: contracts.arb, decimals: 18, image: 'asset-arb.png' },
+    { symbol: 'MKR', name: 'MakerDAO', address: contracts.mkr, decimals: 18, image: 'asset-mkr.png' },
+    { symbol: 'OP', name: 'Optimism', address: contracts.op, decimals: 18, image: 'asset-op.png' },
+    { symbol: 'AAVE', name: 'AAVE', address: contracts.aave, decimals: 18, image: 'asset-aave.png' },
+    { symbol: 'SNX', name: 'Synthetix', address: contracts.snx, decimals: 18, image: 'asset-snx.png' },
+    { symbol: 'CRV', name: 'Curve', address: contracts.crv, decimals: 18, image: 'asset-crv.png' },
+    { symbol: 'PAXG', name: 'PAX Gold', address: contracts.paxg, decimals: 18, image: 'asset-paxg.png' },
+    { symbol: 'RPL', name: 'RocketPool', address: contracts.rpl, decimals: 18, image: 'asset-rpl.png' },
+    { symbol: 'COMP', name: 'Compound', address: contracts.comp, decimals: 18, image: 'asset-comp.png' },
+    { symbol: 'GMX', name: 'GMX', address: contracts.gmx, decimals: 18, image: 'asset-gmx.png' },
+    { symbol: 'ENS', name: 'Ethereum Name Service', address: contracts.ens, decimals: 18, image: 'asset-ens.png' },
+];
+
 const welcomeScreen = () => {
     document.getElementById('welcome').style.display = 'flex';
     document.getElementById('button-welcome-continue').onclick = () => {
@@ -652,27 +673,6 @@ const loadWallets = async () => {
         if (document.getElementById('wallet-name')) refreshWallets();
     },60000);
 }
-
-const additionalAssets = [
-    { symbol: 'ODEX', name: 'ODEX Finance', address: contracts.odexToken, decimals: 18, image: 'asset-odex.png' },
-    { symbol: 'DOGE', name: 'Dogecoin', address: contracts.doge, decimals: 18, image: 'asset-doge.png' },
-    { symbol: 'MATIC', name: 'Polygon Matic', address: contracts.matic, decimals: 18, image: 'asset-matic.png' },
-    { symbol: 'SHIB', name: 'Shiba Inu', address: contracts.shib, decimals: 18, image: 'asset-shib.png' },
-    { symbol: 'LINK', name: 'Chainlink', address: contracts.link, decimals: 18, image: 'asset-link.png' },
-    { symbol: 'UNI', name: 'Uniswap', address: contracts.uni, decimals: 18, image: 'asset-uni.png' },
-    { symbol: 'LDO', name: 'LIDO Finanace', address: contracts.ldo, decimals: 18, image: 'asset-ldo.png' },
-    { symbol: 'ARB', name: 'Arbitrum', address: contracts.arb, decimals: 18, image: 'asset-arb.png' },
-    { symbol: 'MKR', name: 'MakerDAO', address: contracts.mkr, decimals: 18, image: 'asset-mkr.png' },
-    { symbol: 'OP', name: 'Optimism', address: contracts.op, decimals: 18, image: 'asset-op.png' },
-    { symbol: 'AAVE', name: 'AAVE', address: contracts.aave, decimals: 18, image: 'asset-aave.png' },
-    { symbol: 'SNX', name: 'Synthetix', address: contracts.snx, decimals: 18, image: 'asset-snx.png' },
-    { symbol: 'CRV', name: 'Curve', address: contracts.crv, decimals: 18, image: 'asset-crv.png' },
-    { symbol: 'PAXG', name: 'PAX Gold', address: contracts.paxg, decimals: 18, image: 'asset-paxg.png' },
-    { symbol: 'RPL', name: 'RocketPool', address: contracts.rpl, decimals: 18, image: 'asset-rpl.png' },
-    { symbol: 'COMP', name: 'Compound', address: contracts.comp, decimals: 18, image: 'asset-comp.png' },
-    { symbol: 'GMX', name: 'GMX', address: contracts.gmx, decimals: 18, image: 'asset-gmx.png' },
-    { symbol: 'ENS', name: 'Ethereum Name Service', address: contracts.ens, decimals: 18, image: 'asset-ens.png' },
-];
 
 const importTokens = async () => {
     document.getElementById('import-new-token').style.display = 'flex';
@@ -1138,6 +1138,22 @@ const checkApprovals = async () => {
     document.getElementById('sell-button').classList.add('red-bkg');
 }
 
+const addAsset = (symbol) => {
+    const assets = JSON.parse(localStorage.assets);
+    let found = false;
+    for (const asset of assets) {
+        if (symbol == asset.symbol) found = true;
+    }
+    if (!found) return;
+    for (const asset of additionalAssets) {
+        if (symbol == asset.symbol) {
+            assets.push(asset)
+            localStorage.setItem('assets', JSON.stringify(assets));
+            return;
+        }
+    }
+}
+
 const confirmOrder = async () => {
     document.getElementById('confirm-buttons').innerHTML = '<p class="text-center faded">BROADCASTING...</p>'
     const order = JSON.parse(localStorage.order);
@@ -1180,6 +1196,7 @@ const confirmOrder = async () => {
         document.getElementById('confirmation-text').innerHTML = `"${txConfirmation}"`;
         document.getElementById('confirmation-market').innerHTML = `<img src="./images/${order.image || 'market-misc.png'}" class="confirmation-icon" />`
         document.getElementById('confirmation-explorer').innerHTML = `<a href="https://sepolia-explorer.arbitrum.io/tx/${tx.hash}" target="_blank">${tx.hash}</a>`;
+        addAsset(order.token);
         document.getElementById('confirmation-continue').onclick = () => {
             document.getElementById('confirmation').style.display = 'none';
             loadTrade();
@@ -1282,5 +1299,8 @@ if (document.querySelectorAll('.index-section').length > 1) {
     setupApp();
 }
 
-
-
+// Disable back button
+document.addEventListener('touchstart', function(e) {
+    if (e.pageX > 10 && e.pageX < window.innerWidth - 10) return;
+    e.preventDefault();
+});
