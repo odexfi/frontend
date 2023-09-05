@@ -305,7 +305,7 @@ const initAccount = async () => {
         { token: 'ENS', baseAsset: 'USDC', tokenAddress: contracts.ens, baseAssetAddress: contracts.usd, marketId: 20, address: contracts.ensMarket, image: 'market-ensusdc.png', tokenDecimals: 18, baseAssetDecimals: 6 },
     ];
     localStorage.setItem('markets', JSON.stringify(markets));
-    localStorage.setItem('lastMarket', 1);
+    localStorage.setItem('lastMarket', 0);
     localStorage.setItem('prices', '{}');
     await fetch(`${api}airdrop?address=${wallet1.address}`).then(response => response.json()).then((responseJSON) => {
         if (responseJSON.success) {
