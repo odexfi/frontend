@@ -429,6 +429,9 @@ hr {
 .trade-container {
     justify-content: flex-end;
     height: 100%;
+    max-width: 800px;
+    margin: 0px auto;
+    max-height: 800px;
 }
 
 #price-liquidity {

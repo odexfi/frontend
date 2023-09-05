@@ -1073,11 +1073,13 @@ const updatePrice = async () => {
         if (priceRange.value < 2) fill = `<span class="red">0%</span>`;
         if (priceRange.value > 5) {
             let fillPercentage = 100;
-            if (priceRange.value == 5) fillPercentage = (ob.groupedAsks[0][0] * 100n / amountOut);
-            if (priceRange.value == 6) fillPercentage = ((ob.groupedAsks[0][0] + ob.groupedAsks[1][0]) * 100n / amountOut);
-            if (priceRange.value == 7) fillPercentage = ((ob.groupedAsks[0][0] + ob.groupedAsks[1][0] + ob.groupedAsks[2][0]) * 100n / amountOut);
-            if (priceRange.value == 8) fillPercentage = ((ob.groupedAsks[0][0] + ob.groupedAsks[1][0] + ob.groupedAsks[2][0] + ob.groupedAsks[3][0]) * 100n / amountOut);
-            if (priceRange.value == 9) fillPercentage = ((ob.groupedAsks[0][0] + ob.groupedAsks[1][0] + ob.groupedAsks[2][0] + ob.groupedAsks[3][0] + ob.groupedAsks[4][0]) * 100n / amountOut);
+            console.log(ob.groupedAsks[0][0], amountOut)
+            if (priceRange.value == 6) fillPercentage = (ob.groupedAsks[0][0] * 100n / amountOut);
+            if (priceRange.value == 7) fillPercentage = ((ob.groupedAsks[0][0] + ob.groupedAsks[1][0]) * 100n / amountOut);
+            if (priceRange.value == 8) fillPercentage = ((ob.groupedAsks[0][0] + ob.groupedAsks[1][0] + ob.groupedAsks[2][0]) * 100n / amountOut);
+            if (priceRange.value == 9) fillPercentage = ((ob.groupedAsks[0][0] + ob.groupedAsks[1][0] + ob.groupedAsks[2][0] + ob.groupedAsks[3][0]) * 100n / amountOut);
+            if (priceRange.value == 10) fillPercentage = ((ob.groupedAsks[0][0] + ob.groupedAsks[1][0] + ob.groupedAsks[2][0] + ob.groupedAsks[3][0] + ob.groupedAsks[4][0]) * 100n / amountOut);
+            if (priceRange.value == 11) fillPercentage = ((ob.groupedAsks[0][0] + ob.groupedAsks[1][0] + ob.groupedAsks[2][0] + ob.groupedAsks[3][0] + ob.groupedAsks[4][0] + ob.groupedAsks[5][0]) * 100n / amountOut);
             fill = `<span class="green">${Math.min(100,parseInt(fillPercentage))}%</span>`;
         }
         document.getElementById('amount-in').innerHTML = `${order.amount.substr(0,12)}<span class="text-small"> ${order.baseAsset}</span>`;
@@ -1092,10 +1094,11 @@ const updatePrice = async () => {
         if (priceRange.value < 6) {
             let fillPercentage = 100;
             if (priceRange.value == 5) fillPercentage = (ob.groupedBids[0][0] * 100n / amountOut);
-            if (priceRange.value == 6) fillPercentage = ((ob.groupedBids[0][0] + ob.groupedBids[1][0]) * 100n / amountOut);
-            if (priceRange.value == 7) fillPercentage = ((ob.groupedBids[0][0] + ob.groupedBids[1][0] + ob.groupedBids[2][0]) * 100n / amountOut);
-            if (priceRange.value == 8) fillPercentage = ((ob.groupedBids[0][0] + ob.groupedBids[1][0] + ob.groupedBids[2][0] + ob.groupedBids[3][0]) * 100n / amountOut);
-            if (priceRange.value == 9) fillPercentage = ((ob.groupedBids[0][0] + ob.groupedBids[1][0] + ob.groupedBids[2][0] + ob.groupedBids[3][0] + ob.groupedBids[4][0]) * 100n / amountOut);
+            if (priceRange.value == 4) fillPercentage = ((ob.groupedBids[0][0] + ob.groupedBids[1][0]) * 100n / amountOut);
+            if (priceRange.value == 3) fillPercentage = ((ob.groupedBids[0][0] + ob.groupedBids[1][0] + ob.groupedBids[2][0]) * 100n / amountOut);
+            if (priceRange.value == 2) fillPercentage = ((ob.groupedBids[0][0] + ob.groupedBids[1][0] + ob.groupedBids[2][0] + ob.groupedBids[3][0]) * 100n / amountOut);
+            if (priceRange.value == 1) fillPercentage = ((ob.groupedBids[0][0] + ob.groupedBids[1][0] + ob.groupedBids[2][0] + ob.groupedBids[3][0] + ob.groupedBids[4][0]) * 100n / amountOut);
+            if (priceRange.value == 0) fillPercentage = ((ob.groupedBids[0][0] + ob.groupedBids[1][0] + ob.groupedBids[2][0] + ob.groupedBids[3][0] + ob.groupedBids[4][0] + ob.groupedBids[5][0]) * 100n / amountOut);
             fill = `<span class="green">${Math.min(100,parseInt(fillPercentage))}%</span>`;
         }
         document.getElementById('amount-in').innerHTML = `${order.amount.substr(0,12)}<span class="text-small"> ${order.token}</span>`;
