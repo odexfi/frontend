@@ -90,7 +90,12 @@ const loadMarkets = async () => {
     const topWallet = `<div id="markets-wallet"><img class="markets-wallet-icon" src="./images/icon-wallets-selected.png" /> ${wallets[connectedWallet].name}</div>`;
     document.getElementById('top-right').innerHTML = topWallet;
     document.getElementById('markets-wallet').onclick = loadWallets;
+    document.getElementById('link-top-markets').onclick = loadMarkets;
+    document.getElementById('link-latest-markets').onclick = () => listMarkets();
+    document.getElementById('find-market').onclick = findMarket;
+    document.getElementById('create-market').onclick = createMarket;
     await fetch('./components/market.html').then(response => response.text()).then(async (responseText) => {
+        
         let mHTML = '';
         const markets = JSON.parse(localStorage.markets);
         let index = 0;
@@ -123,10 +128,6 @@ const loadMarkets = async () => {
             }));
         }
     });
-    document.getElementById('link-top-markets').onclick = loadMarkets;
-    document.getElementById('link-latest-markets').onclick = () => listMarkets();
-    document.getElementById('find-market').onclick = findMarket;
-    document.getElementById('create-market').onclick = createMarket;
 }
 
 const findMarket = () => {
