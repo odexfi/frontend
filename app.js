@@ -679,6 +679,8 @@ const importTokens = async () => {
     document.getElementById('add-custom-token').onclick = async () => {
         const tokenAddress = document.getElementById('custom-token-address').value;
         await addToken(tokenAddress);
+        document.getElementById('import-new-token').style.display = 'none';
+        loadWallets();
     }
     document.getElementById('cancel-new-token').onclick = () => {
         document.getElementById('import-new-token').style.display = 'none';
@@ -694,6 +696,8 @@ const importTokens = async () => {
         e.target.innerHTML = '...';
         const tokenAddress = e.target.getAttribute("data-address");
         await addToken(tokenAddress);
+        document.getElementById('import-new-token').style.display = 'none';
+        loadWallets();
     }));
 }
 
@@ -714,8 +718,6 @@ const addToken = async (address) => {
     }
     assets.push(newAsset);
     localStorage.setItem('assets', JSON.stringify(assets));
-    document.getElementById('import-new-token').style.display = 'none';
-    loadWallets();
 }
 
 const loadTrade = async () => {
