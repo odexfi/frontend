@@ -345,6 +345,9 @@ const welcomeScreen = () => {
     document.getElementById('button-welcome-continue').onclick = () => {
         document.getElementById('welcome').style.display = 'none';
         loadWallets();
+        setTimeout(() => { if (document.getElementById('wallet-name')) refreshWallets(); },10000);
+        setTimeout(() => { if (document.getElementById('wallet-name')) refreshWallets(); },20000);
+        setTimeout(() => { if (document.getElementById('wallet-name')) refreshWallets(); },40000);
     }
 }
 
@@ -681,9 +684,9 @@ const loadWallets = async () => {
     document.getElementById('deposit-qr').innerHTML = `<img src="https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl=${virtualWallet.address}&choe=UTF-8" class="qr-code responsive-image" />`;
     document.getElementById('wallet-name').innerHTML = virtualWallet.name;
     refreshWallets();
-    setTimeout(() => {
-        if (document.getElementById('wallet-name')) refreshWallets();
-    },60000);
+        setTimeout(() => {
+            if (document.getElementById('wallet-name')) refreshWallets();
+        },60000);
 }
 
 const importTokens = async () => {
