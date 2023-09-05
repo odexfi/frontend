@@ -105,7 +105,7 @@ const loadMarkets = async () => {
             const marketPair = `${market.token}/${market.baseAsset}`;
             const price = await priceLookup(market.token);
             const formattedPrice = formatUSD(price);
-            const buttons = `<button class="button-close red-bkg remove-market" data-market="${index}">X</button> <button class="button-small trade-button" data-market="${index}">TRADE</button>`;
+            const buttons = `<button class="button-close red-bkg remove-market" data-market="${index}">X</button> <button class="trade-button" data-market="${index}">TRADE</button>`;
             mHTML += responseText
             .replace('<!-- market-image -->', marketImage)
             .replace('<!-- market-pair -->', marketPair)

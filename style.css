@@ -365,6 +365,10 @@ hr {
     font-size: 10px;
 }
 
+.trade-button {
+    width: 80px;
+}
+
 /* wallets.html */
 
 .market-title {
