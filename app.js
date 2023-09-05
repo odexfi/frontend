@@ -698,10 +698,12 @@ const importTokens = async () => {
 }
 
 const addToken = async (address) => {
+    const assets = JSON.parse(localStorage.assets);
+    for (const asset of assets)
+        if (asset.address == address) return;
     let newAsset = false;
-    for (const asset of additionalAssets ) {
+    for (const asset of additionalAssets )
         if(address.toLowerCase() == asset.address.toLowerCase()) newAsset = asset;
-    }
     if (!newAsset) {
         const token = new ethers.Contract(address, erc20Abi, provider);
         const symbol = await token.symbol();
@@ -710,7 +712,6 @@ const addToken = async (address) => {
         const image = 'asset-misc.png';
         newAsset = { symbol, name, address, decimals, image };
     }
-    const assets = JSON.parse(localStorage.assets);
     assets.push(newAsset);
     localStorage.setItem('assets', JSON.stringify(assets));
     document.getElementById('import-new-token').style.display = 'none';
@@ -1073,7 +1074,6 @@ const updatePrice = async () => {
         if (priceRange.value < 2) fill = `<span class="red">0%</span>`;
         if (priceRange.value > 5) {
             let fillPercentage = 100;
-            console.log(ob.groupedAsks[0][0], amountOut)
             if (priceRange.value == 6) fillPercentage = (ob.groupedAsks[0][0] * 100n / amountOut);
             if (priceRange.value == 7) fillPercentage = ((ob.groupedAsks[0][0] + ob.groupedAsks[1][0]) * 100n / amountOut);
             if (priceRange.value == 8) fillPercentage = ((ob.groupedAsks[0][0] + ob.groupedAsks[1][0] + ob.groupedAsks[2][0]) * 100n / amountOut);
@@ -1138,22 +1138,6 @@ const checkApprovals = async () => {
     document.getElementById('sell-button').classList.add('red-bkg');
 }
 
-const addAsset = (symbol) => {
-    const assets = JSON.parse(localStorage.assets);
-    let found = false;
-    for (const asset of assets) {
-        if (symbol == asset.symbol) found = true;
-    }
-    if (!found) return;
-    for (const asset of additionalAssets) {
-        if (symbol == asset.symbol) {
-            assets.push(asset)
-            localStorage.setItem('assets', JSON.stringify(assets));
-            return;
-        }
-    }
-}
-
 const confirmOrder = async () => {
     document.getElementById('confirm-buttons').innerHTML = '<p class="text-center faded">BROADCASTING...</p>'
     const order = JSON.parse(localStorage.order);
@@ -1196,7 +1180,7 @@ const confirmOrder = async () => {
         document.getElementById('confirmation-text').innerHTML = `"${txConfirmation}"`;
         document.getElementById('confirmation-market').innerHTML = `<img src="./images/${order.image || 'market-misc.png'}" class="confirmation-icon" />`
         document.getElementById('confirmation-explorer').innerHTML = `<a href="https://sepolia-explorer.arbitrum.io/tx/${tx.hash}" target="_blank">${tx.hash}</a>`;
-        addAsset(order.token);
+        addToken(order.tokenAddress);
         document.getElementById('confirmation-continue').onclick = () => {
             document.getElementById('confirmation').style.display = 'none';
             loadTrade();
@@ -1298,9 +1282,3 @@ if (document.querySelectorAll('.index-section').length > 1) {
 } else {
     setupApp();
 }
-
-// Disable back button
-document.addEventListener('touchstart', function(e) {
-    if (e.pageX > 10 && e.pageX < window.innerWidth - 10) return;
-    e.preventDefault();
-});
