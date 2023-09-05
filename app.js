@@ -647,8 +647,8 @@ const refreshWallets = async () => {
 }
 
 const reset = () => {
-    const confirmReset = prompt('This will delete all walllets and associated data stored on this device. We have no way to restore these wallets or access the funds. Type reset below to confirm you wish to reset your device and delete all wallet data');
-    if (confirmReset == 'reset') {
+    const confirmReset = prompt('This will delete all walllets and associated data stored on this device. We have no way to restore these wallets or access the funds. Type "reset" below to confirm you wish to reset your device and delete all wallet data');
+    if (confirmReset == 'reset' || confirmReset == '"reset"') {
         localStorage.clear();
         window.open("https://odex.fi","_self")
     }
