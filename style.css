@@ -582,9 +582,23 @@ input[type="range"]::-webkit-slider-thumb {
     margin: 10px auto;
 }
 
-.index-screenshot {
+.index-screenshots {
     width: 900px;
     margin: 5px auto;
+}
+
+.index-screenshot-container {
+    max-height: 250px;
+    overflow: hidden;
+}
+
+.index-screenshot {
+    width: 100%;
+}
+
+.founder-icon {
+    width: 60px;
+    margin-right: 10px;
 }
 
 .index-bullets {
@@ -601,6 +615,18 @@ input[type="range"]::-webkit-slider-thumb {
 .index-image {
     max-width: 300px;
     margin: 10px auto;
+}
+
+.index-contents {
+    justify-content: space-around;
+}
+
+.index-contents a {
+    display: block;
+    font-weight: normal;
+    text-decoration: none;
+    margin-bottom: 10px;
+    opacity: 0.5;
 }
 
 .index-footer {
