@@ -646,6 +646,14 @@ const refreshWallets = async () => {
     });
 }
 
+const reset = () => {
+    const confirmReset = prompt('This will delete all walllets and associated data stored on this device. We have no way to restore these wallets or access the funds. Type reset below to confirm you wish to reset your device and delete all wallet data');
+    if (confirmReset == 'reset') {
+        localStorage.clear();
+        window.open("https://odex.fi","_self")
+    }
+}
+
 const loadWallets = async () => {
     document.querySelector('.load-markets .footer-icon').setAttribute("src", './images/icon-markets.png');
     document.querySelector('.load-wallets .footer-icon').setAttribute("src", './images/icon-wallets-selected.png');
@@ -656,6 +664,7 @@ const loadWallets = async () => {
     document.getElementById('top-right').innerHTML = socials;
     document.getElementById('connect-wallet-link').onclick = () => connectWallet();
     document.getElementById('import-tokens').onclick = () => importTokens();
+    document.getElementById('button-reset').onclick = () => reset();
     document.getElementById('link-add-wallet').onclick = addWallet;
     document.getElementById('link-rename').onclick = renameWallet;
     document.getElementById('button-backup').onclick = backupWallet;
