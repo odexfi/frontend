@@ -604,9 +604,9 @@ input[type="range"]::-webkit-slider-thumb {
     width: 100%;
 }
 
-.founder-icon {
-    width: 60px;
-    margin-right: 10px;
+.dev-icon {
+    width: 30px;
+    margin: 0px 10px;
 }
 
 .index-bullets {
