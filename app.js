@@ -916,11 +916,11 @@ const displayPendingOrders = async () => {
         let stillActive = false;
         for (let i = 0; i < 100; i++) {
             if (ob[2][i] == virtualWallet.address) {
-                oHTML += `<tr><td class="green">BUY</td><td>${market.token}/${market.baseAsset}</td><td>${ethers.formatUnits(ob[1][i].toString(), market.baseAssetDecimals)}</td><td>${ethers.formatUnits(ob[1][i].toString(), market.baseAssetDecimals).substr(0,6)}</td><td><button class="cancel-order button-small" data-bidask="bid" data-index="${i}">X</button></tr>`;
+                oHTML += `<tr><td class="green">BUY</td><td>${market.token}/${market.baseAsset}</td><td>${ethers.formatUnits(ob[1][i].toString(), market.baseAssetDecimals)}</td><td>${ethers.formatUnits(ob[1][i].toString(), market.baseAssetDecimals).substr(0,6)}</td><td><button class="cancel-order button-small" data-bidask="bid" data-market="${market.address}" data-index="${i}">X</button></tr>`;
                 stillActive = true;
             }
             if (ob[5][i] == virtualWallet.address) {
-                oHTML += `<tr><td class="red">SELL</td><td>${market.token}/${market.baseAsset}</td><td>${ethers.formatUnits(ob[4][i].toString(), market.baseAssetDecimals)}</td><td>${ethers.formatUnits(ob[3][i].toString(), market.baseAssetDecimals).substr(0,6)}</td><td><button class="cancel-order button-small" data-bidask="ask" data-index="${i}">X</button></tr>`;
+                oHTML += `<tr><td class="red">SELL</td><td>${market.token}/${market.baseAsset}</td><td>${ethers.formatUnits(ob[4][i].toString(), market.baseAssetDecimals)}</td><td>${ethers.formatUnits(ob[3][i].toString(), market.baseAssetDecimals).substr(0,6)}</td><td><button class="cancel-order button-small" data-bidask="ask" data-market="${market.address}" data-index="${i}">X</button></tr>`;
                 stillActive = true;
             }
         }
@@ -934,10 +934,10 @@ const displayPendingOrders = async () => {
     document.querySelectorAll('.cancel-order').forEach(a => a.addEventListener('click', async (e) => {
         e.target.innerHTML = '...';
         const orderbookIndex = e.target.getAttribute("data-index");
+        const marketAddress = e.target.getAttribute("data-market");
         const bidAsk = e.target.getAttribute("data-bidask");
         const virtualWallet = await loadWallet();
-        const market = JSON.parse(localStorage.markets)[localStorage.lastMarket];
-        const contract = new ethers.Contract(market.address, odexMarketsAbi, virtualWallet);
+        const contract = new ethers.Contract(marketAddress, odexMarketsAbi, virtualWallet);
         if (bidAsk == 'bid') {
             const tx = await contract.cancelBid(orderbookIndex);
             await tx.wait();
