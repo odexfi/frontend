@@ -349,7 +349,7 @@ hr {
 }
 
 .market-pair-title {
-    font-size: 32px;
+    font-size: 26px;
 }
 
 .market-icon {
@@ -420,6 +420,10 @@ hr {
     margin: 10px auto;
 }
 
+.withdraw-button {
+    font-size: 10px;
+}
+
 .additional-asset-icon {
     height: 60px;
 }
@@ -447,11 +451,6 @@ hr {
 
 #tradingview-chart {
     height: 280px;
-}
-@media screen and (min-width: 1001px) {
-    #tradingview-chart {
-        height: 380px;
-    }
 }
 
 .orderbook-options {
@@ -672,4 +671,34 @@ input[type="range"]::-webkit-slider-thumb {
     background: #000000EE;
     padding: 2%;
     overflow: auto;
+}
+
+@media screen and (min-height: 1000px) {
+    #tradingview-chart {
+        height: 380px;
+    }
+}
+
+@media screen and (min-height: 900px) {
+    #tradingview-chart {
+        height: 320px;
+    }
+}
+
+@media screen and (max-height: 815px) {
+    #tradingview-chart {
+        height: 200px;
+    }
+    .footer-menu {
+        margin-top: 8px;
+    }
+}
+
+@media screen and (max-height: 715px) {
+    #price-liquidity {
+        display: none;
+    }
+    .footer-menu {
+        margin-top: 3px;
+    }
 }

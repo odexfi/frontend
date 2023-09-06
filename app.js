@@ -507,7 +507,7 @@ const withdraw = async (assetId) => {
         try {
             const virtualWallet = await loadWallet();
             const contract = new ethers.Contract(asset.address, erc20Abi, virtualWallet);
-            const tx = await contract.transfer(address, amount);
+            const tx = await contract.transfer(withdrawalAddress, amount);
             prompt('Transaction confirmed! TX Hash:', tx.hash);
         } catch (e) {
             alert('app.js e206 Transaction error');
@@ -603,15 +603,15 @@ const refreshWallets = async () => {
                 console.log('app.js e225 balanceOf failed');
             }
             let additional = '';
-            const wethButtons = `<button id="weth-wrap" class="button-small">WRAP ETH</button> <button id="weth-unwrap" class="button-small">UNWRAP</button>`
-            if (asset.symbol == 'wETH') additional = wethButtons;
+            //const wethButtons = `<button id="weth-wrap" class="button-small">WRAP ETH</button> <button id="weth-unwrap" class="button-small">UNWRAP</button>`
+            //if (asset.symbol == 'wETH') additional = wethButtons;
 
             aHTML += responseText
                 .replace('<!-- asset-image -->', assetImage)
                 .replace('<!-- asset-symbol -->', asset.symbol)
                 .replace('<!-- asset-price -->', formattedPrice)
                 .replace('<!-- asset-qty -->', `${qty.toString().substr(0,10)}`)
-                .replace('<!-- asset-withdraw -->', `<button class="withdraw-button" data-asset="${assetId}">WITHDRAW</button>`)
+                .replace('<!-- asset-withdraw -->', `<button class="button-small withdraw-button" data-asset="${assetId}">WITHDRAW</button>`)
                 .replace('<!-- asset-additional -->', additional);
             assetId += 1;
         }
@@ -621,8 +621,8 @@ const refreshWallets = async () => {
             const assetId = e.target.getAttribute('data-asset');
             withdraw(assetId);
         }));
-        document.getElementById('weth-wrap').onclick = wrapEth;
-        document.getElementById('weth-unwrap').onclick = unwrapEth;
+        //document.getElementById('weth-wrap').onclick = wrapEth;
+        //document.getElementById('weth-unwrap').onclick = unwrapEth;
     });
     await fetch('./components/wallet-disconnected.html').then(response => response.text()).then(async (responseText) => {
         const diconnectedWallets = JSON.parse(localStorage.wallets);
@@ -756,13 +756,6 @@ const loadTrade = async () => {
     const price = await priceLookup(market.token);
     let formattedPrice = formatUSD(price);
     document.getElementById('trade-price').innerHTML = formattedPrice;
-    setTimeout(() => {
-        const headerContainer = document.getElementById('header-container').getBoundingClientRect();
-        document.querySelectorAll('.price-liquidity-item').forEach(e => {
-            const plc = e.getBoundingClientRect();
-            if (plc.top < headerContainer.bottom) e.style.display = 'none';
-        });
-    }, 1000);
     const topMarket = `<div id="trade-market" class="flex-row flex-end"><div class="market-title">${market.token}/${market.baseAsset}</div> <img src="./images/${market.image || 'market-misc.png'}" class="trade-icon" /></div>`;
     document.getElementById('top-right').innerHTML = topMarket;
     document.getElementById('trade-market').onclick = loadMarkets;
@@ -781,7 +774,7 @@ const loadTrade = async () => {
     document.getElementById('buy-button').innerHTML = `BUY ${market.token}`;
     document.getElementById('sell-button').innerHTML = `SELL ${market.token}`;
     document.getElementById('orderbook-link').onclick = displayOrderBook;
-    document.getElementById('orders-link').onclick = displayOrders;
+    document.getElementById('orders-link').onclick = displayPendingOrders;
     document.getElementById('trades-link').onclick = displayTrades;
     document.getElementById('activity-link').onclick = displayActivity;
     document.getElementById('base-range').addEventListener("input", (e) => {
@@ -890,19 +883,32 @@ const displayOrderBook = async () => {
     },refreshRate);
 }
 
-const displayOrders = async () => {
+const displayPendingOrders = async () => {
     document.querySelectorAll('.ob-link').forEach(a => a.classList.remove('blue'));
     document.getElementById('orders-link').classList.add('blue');
     const virtualWallet = await loadWallet();
-    const market = JSON.parse(localStorage.markets)[localStorage.lastMarket];
-    const contract = new ethers.Contract(market.address, odexMarketsAbi, provider);
-    const ob = await contract.orderbook();
-    let oHTML = `<table class="orderbook"><tbody><tr class="faded"><td>SIDE</td><td>PRICE</td><td>AMOUNT</td><td>CANCEL</tr>`;
-    for (let i = 0; i < 100; i++) {
-        if (ob[2][i] == virtualWallet.address)
-            oHTML += `<tr><td class="green">BUY</td><td>${ethers.formatUnits(ob[1][i].toString(), market.baseAssetDecimals)}</td><td>${ethers.formatUnits(ob[1][i].toString(), market.baseAssetDecimals).substr(0,6)}</td><td><button class="cancel-order button-small" data-bidask="bid" data-index="${i}">X</button></tr>`;
-        if (ob[5][i] == virtualWallet.address)
-            oHTML += `<tr><td class="red">SELL</td><td>${ethers.formatUnits(ob[4][i].toString(), market.baseAssetDecimals)}</td><td>${ethers.formatUnits(ob[3][i].toString(), market.baseAssetDecimals).substr(0,6)}</td><td><button class="cancel-order button-small" data-bidask="ask" data-index="${i}">X</button></tr>`;
+    const markets = JSON.parse(localStorage.markets);
+    let oHTML = `<table class="orderbook"><tbody><tr class="faded"><td>SIDE</td><td>MARKET</td><td>PRICE</td><td>AMOUNT</td><td>CANCEL</tr>`;
+    for (let i = 0; i < markets.length; i++) {
+        const market = markets[i];
+        if (!market.active) return false;
+        const contract = new ethers.Contract(market.address, odexMarketsAbi, provider);
+        const ob = await contract.orderbook();
+        let stillActive = false;
+        for (let i = 0; i < 100; i++) {
+            if (ob[2][i] == virtualWallet.address) {
+                oHTML += `<tr><td class="green">BUY</td><td>${market.token}/${market.baseAsset}</td><td>${ethers.formatUnits(ob[1][i].toString(), market.baseAssetDecimals)}</td><td>${ethers.formatUnits(ob[1][i].toString(), market.baseAssetDecimals).substr(0,6)}</td><td><button class="cancel-order button-small" data-bidask="bid" data-index="${i}">X</button></tr>`;
+                stillActive = true;
+            }
+            if (ob[5][i] == virtualWallet.address) {
+                oHTML += `<tr><td class="red">SELL</td><td>${market.token}/${market.baseAsset}</td><td>${ethers.formatUnits(ob[4][i].toString(), market.baseAssetDecimals)}</td><td>${ethers.formatUnits(ob[3][i].toString(), market.baseAssetDecimals).substr(0,6)}</td><td><button class="cancel-order button-small" data-bidask="ask" data-index="${i}">X</button></tr>`;
+                stillActive = true;
+            }
+        }
+        if (!stillActive) {
+            markets[i].active = false;
+            localStorage.setItem('markets', JSON.stringify(markets));
+        }
     }
     oHTML += `<tr><td></td><td></td><td></td><td><button id="cancel-all" class="button-small">ALL</button></td></tr></tbody></table>`
     document.getElementById('orderbook-container').innerHTML = oHTML;
@@ -920,16 +926,19 @@ const displayOrders = async () => {
             const tx = await contract.cancelAsk(orderbookIndex);
             await tx.wait();
         }
-        displayOrders();
+        displayPendingOrders();
     }));
     document.getElementById('cancel-all').onclick = async () => {
         document.getElementById('cancel-all').innerHTML = '...';
         const virtualWallet = await loadWallet();
-        const market = JSON.parse(localStorage.markets)[localStorage.lastMarket];
-        const contract = new ethers.Contract(market.address, odexMarketsAbi, virtualWallet);
-        const tx = await contract.cancelAllOrders();
-        await tx.wait();
-        displayOrders();
+        const markets = JSON.parse(localStorage.markets);
+        for (const market of markets) {
+            if (!market.active) return false;
+            const contract = new ethers.Contract(market.address, odexMarketsAbi, virtualWallet);
+            const tx = await contract.cancelAllOrders();
+            await tx.wait();
+        }
+        displayPendingOrders();
         document.getElementById('cancel-all').innerHTML = 'ALL';
     }
 }
@@ -1220,6 +1229,11 @@ const confirmOrder = async () => {
             const tweetURL = `https://twitter.com/intent/tweet?text=I%20just%20traded%20%24${order.token}%20%2F%20%24${order.baseAsset}%20on%20%40ODEXfi%0A%0A${encodeURIComponent(twit)}&url=https%3A%2F%2Fodex.fi`;
             window.open(tweetURL);
         }
+        const markets = JSON.parse(localStorage.markets);
+        for (let i = 0; i < markets.length; i++)
+            if (markets[i].address == order.address) markets[i].active = true;
+        localStorage.setItem('markets', JSON.stringify(markets));
+        
     } catch(e) {
         console.log(e);
         if (e.reason) alert(`TX Failed: ${e.reason}`);
