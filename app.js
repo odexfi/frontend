@@ -776,8 +776,8 @@ const loadTrade = async () => {
     document.getElementById('token-range').setAttribute('step',1 / (10 ** market.tokenDecimals));
     document.getElementById('base-balance').innerHTML = `<span class="text-small">${market.baseAsset} Balance: </span>${formattedBaseAssetBalance}`;
     document.getElementById('token-balance').innerHTML = `<span class="text-small">${market.token} Balance: </span>${formattedTokenBalance}`;
-    document.getElementById('amount-base-label').innerHTML = `Ammount ${market.baseAsset}`;
-    document.getElementById('amount-token-label').innerHTML = `Ammount ${market.token}`;
+    document.getElementById('amount-base-label').innerHTML = `Amount ${market.baseAsset}`;
+    document.getElementById('amount-token-label').innerHTML = `Amount ${market.token}`;
     document.getElementById('buy-button').innerHTML = `BUY ${market.token}`;
     document.getElementById('sell-button').innerHTML = `SELL ${market.token}`;
     document.getElementById('orderbook-link').onclick = displayOrderBook;
