@@ -891,7 +891,7 @@ const displayPendingOrders = async () => {
     let oHTML = `<table class="orderbook"><tbody><tr class="faded"><td>SIDE</td><td>MARKET</td><td>PRICE</td><td>AMOUNT</td><td>CANCEL</tr>`;
     for (let i = 0; i < markets.length; i++) {
         const market = markets[i];
-        if (!market.active) return false;
+        if (!market.active) continue;
         const contract = new ethers.Contract(market.address, odexMarketsAbi, provider);
         const ob = await contract.orderbook();
         let stillActive = false;
@@ -910,7 +910,7 @@ const displayPendingOrders = async () => {
             localStorage.setItem('markets', JSON.stringify(markets));
         }
     }
-    oHTML += `<tr><td></td><td></td><td></td><td><button id="cancel-all" class="button-small">ALL</button></td></tr></tbody></table>`
+    oHTML += `<tr><td></td><td></td><td></td><td></td><td><button id="cancel-all" class="button-small">ALL</button></td></tr></tbody></table>`
     document.getElementById('orderbook-container').innerHTML = oHTML;
     document.querySelectorAll('.cancel-order').forEach(a => a.addEventListener('click', async (e) => {
         e.target.innerHTML = '...';
@@ -933,7 +933,7 @@ const displayPendingOrders = async () => {
         const virtualWallet = await loadWallet();
         const markets = JSON.parse(localStorage.markets);
         for (const market of markets) {
-            if (!market.active) return false;
+            if (!market.active) continue;
             const contract = new ethers.Contract(market.address, odexMarketsAbi, virtualWallet);
             const tx = await contract.cancelAllOrders();
             await tx.wait();

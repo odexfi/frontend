@@ -35,6 +35,10 @@
 }
 .blue {
     color: #12dbcdff;
+    background: -webkit-linear-gradient(#12dbcd, #0b7770);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: none;
 }
 
 .grey-bkg {
@@ -477,6 +481,14 @@ hr {
 
 .orderbook td {
     width: 25%;
+}
+
+.cancel-order {
+    width: 22px;
+}
+
+#cancel-all {
+    width: 40px;
 }
 
 #display-trades {
