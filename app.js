@@ -453,7 +453,7 @@ const priceLookup = async (assetSymbol) => {
     // Avoid hitting the RPC node too often
     const prices = JSON.parse(localStorage.getItem('prices'));
     if (prices && prices[assetSymbol] && prices[assetSymbol].lastUpdate > unixTimestamp - 60) {
-        return prices[assetSymbol].price;
+        return BigInt(prices[assetSymbol].price);
     }
     const markets = JSON.parse(localStorage.markets);
     let odexAddress;
@@ -466,7 +466,7 @@ const priceLookup = async (assetSymbol) => {
             const price = await contract.midPrice();
             prices[assetSymbol] = { price: price.toString(), lastUpdate: unixTimestamp };
             localStorage.prices = JSON.stringify(prices);
-            return price;
+            return BigInt(price);
         } catch (e) {
             console.log('app.js e164 priceLookup failed',e);
             return 0;
@@ -594,14 +594,16 @@ const refreshWallets = async () => {
             if (asset.image) assetImage = `<img class="asset-icon" src="./images/${asset.image}" />`;
             const price = await priceLookup(asset.symbol);
             const formattedPrice =  formatUSD(price);
-            let qty = 0;
+            let qty = 0n;
+            let wei;
             try {
                 const contract = new ethers.Contract(asset.address, erc20Abi, provider);
-                const wei = await contract.balanceOf(virtualWallet.address);
+                wei = await contract.balanceOf(virtualWallet.address);
                 qty = ethers.formatUnits(wei, asset.decimals);
             } catch (e) {
                 console.log('app.js e225 balanceOf failed');
             }
+            const valuation = wei * price / ethers.parseUnits('1',asset.decimals);
             let additional = '';
             //const wethButtons = `<button id="weth-wrap" class="button-small">WRAP ETH</button> <button id="weth-unwrap" class="button-small">UNWRAP</button>`
             //if (asset.symbol == 'wETH') additional = wethButtons;
@@ -611,6 +613,7 @@ const refreshWallets = async () => {
                 .replace('<!-- asset-symbol -->', asset.symbol)
                 .replace('<!-- asset-price -->', formattedPrice)
                 .replace('<!-- asset-qty -->', `${qty.toString().substr(0,10)}`)
+                .replace('<!-- asset-valuation -->', `$${formatUSD(valuation)}`)
                 .replace('<!-- asset-withdraw -->', `<button class="button-small withdraw-button" data-asset="${assetId}">WITHDRAW</button>`)
                 .replace('<!-- asset-additional -->', additional);
             assetId += 1;
@@ -777,19 +780,35 @@ const loadTrade = async () => {
     document.getElementById('orders-link').onclick = displayPendingOrders;
     document.getElementById('trades-link').onclick = displayTrades;
     document.getElementById('activity-link').onclick = displayActivity;
-    document.getElementById('base-range').addEventListener("input", (e) => {
+    document.getElementById('base-range').addEventListener("input", async (e) => {
         document.getElementById('base-amount').innerHTML = e.target.value.toString().substr(0,8);
+        const price = await priceLookup(market.token);
+        const amountOut = ethers.parseUnits(e.target.value.toString(), market.baseAssetDecimals) * ethers.parseUnits('1',market.tokenDecimals) / price;
+        document.getElementById('token-range').value = ethers.formatUnits(amountOut,18);
+        document.getElementById('token-amount').innerHTML = ethers.formatUnits(amountOut,18).toString().substr(0,8);
     });
-    document.getElementById('token-range').addEventListener("input", (e) => {
+    document.getElementById('token-range').addEventListener("input", async (e) => {
         document.getElementById('token-amount').innerHTML = e.target.value.toString().substr(0,8);
+        const price = await priceLookup(market.token);
+        const amountOut = ethers.parseUnits(e.target.value.toString(), market.tokenDecimals) * price / ethers.parseUnits('1',market.tokenDecimals);
+        document.getElementById('base-range').value = ethers.formatUnits(amountOut,6);
+        document.getElementById('base-amount').innerHTML = ethers.formatUnits(amountOut,6).toString().substr(0,8);
     });
     document.getElementById('buy-button').onclick = () => {
-        localStorage.setItem('order',JSON.stringify({...market, type: 'BUY', amount: document.getElementById('base-amount').innerHTML}));
-        loadOrder();
+        if (ethers.parseUnits(document.getElementById('base-amount').innerHTML, market.baseAssetDecimals) > baseAssetBalance) {
+            alert('Trade exceeds base asset balance');
+        } else {
+            localStorage.setItem('order',JSON.stringify({...market, type: 'BUY', amount: document.getElementById('base-amount').innerHTML}));
+            loadOrder();
+        }
     }
     document.getElementById('sell-button').onclick = () => {
-        localStorage.setItem('order',JSON.stringify({...market, type: 'SELL', amount: document.getElementById('token-amount').innerHTML}));
-        loadOrder();
+        if (ethers.parseUnits(document.getElementById('token-amount').innerHTML, market.baseAssetDecimals) > tokenBalance) {
+            alert('Trade exceeds token balance');
+        } else {
+            localStorage.setItem('order',JSON.stringify({...market, type: 'SELL', amount: document.getElementById('token-amount').innerHTML}));
+            loadOrder();
+        }
     }
     displayOrderBook();
     checkApprovals();
