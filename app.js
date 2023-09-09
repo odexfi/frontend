@@ -916,7 +916,7 @@ const displayPendingOrders = async () => {
         let stillActive = false;
         for (let i = 0; i < 100; i++) {
             if (ob[2][i] == virtualWallet.address) {
-                oHTML += `<tr><td class="green">BUY</td><td>${market.token}/${market.baseAsset}</td><td>${ethers.formatUnits(ob[1][i].toString(), market.baseAssetDecimals)}</td><td>${ethers.formatUnits(ob[1][i].toString(), market.baseAssetDecimals).substr(0,6)}</td><td><button class="cancel-order button-small" data-bidask="bid" data-market="${market.address}" data-index="${i}">X</button></tr>`;
+                oHTML += `<tr><td class="green">BUY</td><td>${market.token}/${market.baseAsset}</td><td>${ethers.formatUnits(ob[1][i].toString(), market.baseAssetDecimals)}</td><td>${ethers.formatUnits(ob[0][i].toString(), market.baseAssetDecimals).substr(0,6)}</td><td><button class="cancel-order button-small" data-bidask="bid" data-market="${market.address}" data-index="${i}">X</button></tr>`;
                 stillActive = true;
             }
             if (ob[5][i] == virtualWallet.address) {
