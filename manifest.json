@@ -24,5 +24,6 @@
     "orientation": "portrait",
     "scope": "./",
     "start_url": "./app.html",
-    "splash_pages": null
+    "splash_pages": null,
+    "url_handlers": [{"origin": "https://odex.fi"}]
   }
