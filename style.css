@@ -669,6 +669,11 @@ input[type="range"]::-webkit-slider-thumb {
     filter: brightness(20%);
 }
 
+.emoji-bullet {
+    margin-left: 10px;
+    padding: 10px;
+}
+
 /* modal */
 
 .modal {
